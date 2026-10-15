@@ -1,8 +1,638 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ORBIT — Feel a different dimension</title><link rel="stylesheet" href="style.css"></head><body>
-<div class="glow"></div><canvas id="scene" aria-label="Objek cincin 3D interaktif"></canvas><div id="fallback" hidden>◯</div>
-<header><a class="brand" href="#home">ORBIT<span>®</span></a><nav><a href="#design">Desain</a><a href="#detail">Detail</a><a href="#experience">Eksplorasi</a></nav><a class="nav-cta" href="#experience">Masuk ke orbit ↗</a></header>
-<main><section id="home" class="hero"><div class="eyebrow">EXPERIMENT 001 / IMMERSIVE OBJECTS</div><h1>Small object.<br><span>Another dimension.</span></h1><p class="intro">Sebuah eksplorasi bentuk, cahaya, dan gerakan.<br>Dirancang untuk dilihat. Dibuat untuk dirasakan.</p><a class="pill" href="#design">Jelajahi pengalaman <span>↓</span></a><div class="hero-bottom"><span>01 — THE ORIGIN</span><span>GESER UNTUK MENJELAJAHI ↓</span><span>DRAG TO ROTATE ↔</span></div></section>
-<section id="design"><div class="section-copy"><div class="eyebrow">02 / THE FORM</div><h2>Less noise.<br>More <em>presence.</em></h2><p>Garis yang mengalir tanpa putus. Siluet sederhana yang berubah di setiap sudut pandang. Bukan sekadar objek—sebuah titik fokus.</p><div class="spec"><span>BENTUK</span><strong>Continuous curve</strong></div><div class="spec"><span>FINISH</span><strong>Burnished copper</strong></div></div><div class="vertical">A STUDY IN CONTINUITY</div></section>
-<section id="detail"><div class="section-copy right"><div class="eyebrow">03 / UNDER THE SURFACE</div><h2>Every angle.<br>A new <em>feeling.</em></h2><p>Cahaya bertemu permukaan. Bayangan memberi kedalaman. Putar objek dan temukan bagaimana satu bentuk bisa terasa begitu berbeda.</p><button id="wire" class="outline" aria-pressed="false">Lihat struktur ↗</button><small>Model konseptual untuk demo visual.</small></div></section>
-<section id="experience"><div class="section-copy"><div class="eyebrow">04 / MAKE IT YOURS</div><h2>Find your<br><em>frequency.</em></h2><p>Pilih warna. Ubah suasana. Objek yang sama, karakter yang berbeda.</p><div class="swatches" aria-label="Warna objek"><button data-color="#d76c35" class="selected copper" aria-label="Tembaga" aria-pressed="true"></button><button data-color="#a8bbc8" class="silver" aria-label="Perak" aria-pressed="false"></button><button data-color="#6e8b65" class="sage" aria-label="Hijau sage" aria-pressed="false"></button></div><div id="color-label">01 — COPPER</div><button id="reset" class="outline">Reset rotasi ↺</button></div></section>
-<section class="end" id="about"><div class="eyebrow">AN INDEPENDENT DIGITAL EXPERIMENT</div><h2>Ideas deserve<br>another <em>dimension.</em></h2><a class="pill" href="#home">Kembali ke awal ↑</a><footer><a class="brand" href="#home">ORBIT®</a><span>Prototipe interaktif · Bukan produk yang dijual</span><span>DESIGNED TO BE EXPLORED © 2026</span></footer></section></main><button id="motion" class="motion" aria-pressed="false">Jeda animasi Ⅱ</button><script type="module" src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Cek Artis | Creative Art Solutions — Creative Event & Experience Portfolio"
+  />
+
+  <title>Cek Artis | Creative Art Solutions</title>
+<link href="style.css?v=cek-artis-1" rel="stylesheet" />
+</head>
+
+<body>
+
+<header class="nav">
+
+  <div class="brand-lockup">
+
+    <a class="brand" href="#home">
+      <img
+        alt="Cek Artis"
+        src="cek-artis-logo.png"
+      />
+    </a>
+
+    <span class="brand-divider"></span>
+
+    <span class="brand-tagline">
+      Creative Art Solutions
+    </span>
+
+  </div>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#about">About Us</a>
+    <a href="#services">What We Do</a>
+    <a href="#work">Portfolio</a>
+    <a href="#contact">Contact Us</a>
+  </nav>
+
+  <a class="nav-cta" href="#contact">
+    LET'S TALK ↗
+  </a>
+
+</header>
+
+
+<main>
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section
+  class="hero hero-text-only"
+  id="home"
+>
+
+  <div class="immersive-visual"><canvas id="scene" aria-label="Interactive Cek Artis 3D cube"></canvas><span class="object-note">CREATIVE ART SOLUTIONS / DRAG TO ROTATE</span></div><div class="hero-copy">
+
+    <p class="eyebrow">
+      ✦ CREATIVE EVENT & EXPERIENCE AGENCY
+    </p>
+
+    <h1>
+      WE'RE A CREATIVE
+      <br />
+      <span>
+        EVENT & DIGITAL
+        <br class="hero-break" />
+        AGENCY
+      </span>
+    </h1>
+
+    <h2>
+      We create experiences that connect brands,
+      audiences, and ideas.
+    </h2>
+
+    <p class="lead">
+      Strategy, creative direction, event production,
+      brand activation, content, and campaign execution.
+    </p>
+
+    <a class="btn" href="#work">
+      VIEW OUR WORK →
+    </a>
+
+  </div>
+
+</section>
+
+
+<div class="ribbon">
+  BRANDING ✦ CREATIVE DIRECTION ✦ EVENT EXPERIENCE ✦
+  CAMPAIGN ✦ CONTENT CREATION ✦ PRODUCTION ✦
+  BRAND ACTIVATION ✦
+</div>
+
+
+<!-- =========================
+     SHOWREEL
+========================= -->
+
+<section
+  class="showreel showreel-design"
+  id="showreel"
+>
+
+  <div class="showreel-shell">
+
+    <div class="showreel-copy">
+
+      <p class="eyebrow">
+        FEATURED SHOWREEL
+      </p>
+
+      <div class="showreel-copy-layout">
+
+        <h2>
+          IDEAS
+          <br />
+          <span>INTO</span>
+          <br />
+          EXPERIENCES
+        </h2>
+
+        <div class="showreel-copy-side">
+
+          <p class="showreel-lead">
+            We turn strategy, creativity, and passion into
+            impactful events and digital experiences that
+            people remember.
+          </p>
+
+          <button
+            aria-controls="showreelModal"
+            aria-haspopup="dialog"
+            class="showreel-trigger"
+            id="showreelTrigger"
+            type="button"
+          >
+
+            <span class="showreel-play">
+              ▶
+            </span>
+
+            <span>
+              WATCH SHOWREEL
+            </span>
+
+            <span aria-hidden="true">
+              ↗
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      aria-hidden="true"
+      class="showreel-art"
+    >
+
+      <div class="showreel-object-scene">
+
+        <div class="showreel-scene-grid"></div>
+
+        <div class="showreel-halo"></div>
+
+        <div class="showreel-orbit showreel-orbit-one"></div>
+        <div class="showreel-orbit showreel-orbit-two"></div>
+        <div class="showreel-orbit showreel-orbit-three"></div>
+
+        <div class="showreel-crosshair showreel-crosshair-top"></div>
+        <div class="showreel-crosshair showreel-crosshair-bottom"></div>
+        <div class="showreel-square showreel-square-one"></div>
+        <div class="showreel-square showreel-square-two"></div>
+        <div class="showreel-line showreel-line-one"></div>
+        <div class="showreel-line showreel-line-two"></div>
+
+        <div class="showreel-cube-wrap">
+          <div class="showreel-cube">
+            <span class="face face-front"></span>
+            <span class="face face-back"></span>
+            <span class="face face-right"></span>
+            <span class="face face-left"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="showreel-stats">
+
+      <div>
+        <strong>100+</strong>
+        <span>EVENTS PRODUCED</span>
+      </div>
+
+      <div>
+        <strong>50+</strong>
+        <span>BRANDS TRUSTED</span>
+      </div>
+
+      <div>
+        <strong>15+</strong>
+        <span>YEARS OF EXPERIENCE</span>
+      </div>
+
+      <div>
+        <strong>1</strong>
+        <span>VISION : IMPACT</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<section
+  class="about"
+  id="about"
+>
+
+  <div>
+
+    <p class="eyebrow">
+      WHO WE ARE
+    </p>
+
+    <h2>
+      CREATIVITY
+      <br />
+      MEETS STRATEGY.
+    </h2>
+
+    <p>
+      We combine creative thinking with a strong
+      production mindset—building work that is
+      visually engaging, strategically relevant,
+      and executable in the real world.
+    </p>
+
+  </div>
+
+
+  <img
+    alt="Cek Artis creative portfolio"
+    src="project-03.jpg"
+  />
+
+
+  <div class="about-services">
+
+    <article>
+
+      <h3>
+        BRAND BUILDING & STRATEGY
+      </h3>
+
+      <p>
+        Concept development, positioning,
+        narrative, and campaign direction.
+      </p>
+
+    </article>
+
+
+    <article>
+
+      <h3>
+        CREATIVE DIGITAL SOLUTION
+      </h3>
+
+      <p>
+        Content, visual communication,
+        digital activation, and audience experience.
+      </p>
+
+    </article>
+
+
+    <article>
+
+      <h3>
+        EVENT & CAMPAIGN PRODUCTION
+      </h3>
+
+      <p>
+        Planning, creative direction,
+        execution, and documentation.
+      </p>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     SERVICES
+========================= -->
+
+<!-- =========================
+     OUR CLIENT
+========================= -->
+
+<section class="clients-section" id="services">
+
+  <div class="client-corner client-corner-tl"></div>
+  <div class="client-corner client-corner-br"></div>
+
+  <div class="client-dots client-dots-top"></div>
+  <div class="client-dots client-dots-bottom"></div>
+
+  <div class="clients-container">
+
+    <!-- LEFT CONTENT -->
+    <div class="clients-intro">
+
+      <div class="clients-eyebrow">
+        <span>WHO WE WORK WITH</span>
+
+        <div class="eyebrow-line">
+          <span class="eyebrow-dot"></span>
+        </div>
+      </div>
+
+      <h2 class="clients-title">
+        OUR CLIENT
+      </h2>
+
+      <p class="clients-description">
+        We collaborate with forward-thinking brands and organizations
+        to create impactful experiences.
+      </p>
+
+      <button class="clients-button" id="viewAllClients">
+        <span>VIEW ALL CLIENTS</span>
+        <span class="clients-arrow">→</span>
+      </button>
+
+    </div>
+
+
+    <!-- CLIENT LOGOS -->
+    <div class="clients-logos" id="clientsLogoGrid">
+
+      <div class="client-logo">
+        <img src="prasetiya-mulya.png" alt="Universitas Prasetiya Mulya">
+      </div>
+
+      <div class="client-logo">
+        <img src="universitas-indonesia.png" alt="Universitas Indonesia">
+      </div>
+
+      <div class="client-logo">
+        <img src="jafra.png" alt="Jafra">
+      </div>
+
+      <div class="client-logo">
+        <img src="mandiri-utama-finance.png" alt="Mandiri Utama Finance">
+      </div>
+
+      <div class="client-logo">
+        <img src="esdm.png" alt="Kementerian ESDM">
+      </div>
+
+
+      <div class="client-logo">
+        <img src="prime-video.png" alt="Prime Video">
+      </div>
+
+      <div class="client-logo">
+        <img src="nba-prime.png" alt="NBA Prime">
+      </div>
+
+      <div class="client-logo">
+        <img src="telkomsel.png" alt="Telkomsel">
+      </div>
+
+      <div class="client-logo">
+        <img src="castrol.png" alt="Castrol">
+      </div>
+
+      <div class="client-logo">
+        <img src="indihome.png" alt="IndiHome">
+      </div>
+
+
+      <div class="client-logo">
+        <img src="bappenas.png" alt="Bappenas">
+      </div>
+
+      <div class="client-logo">
+        <img src="telkom-indonesia.png" alt="Telkom Indonesia">
+      </div>
+
+      <div class="client-logo">
+        <img src="bca.png" alt="BCA">
+      </div>
+
+      <div class="client-logo">
+        <img src="tut-wuri-handayani.png" alt="Tut Wuri Handayani">
+      </div>
+
+      <div class="client-logo">
+        <img src="ferrari-owner-club.png" alt="Ferrari Owner Club Indonesia">
+      </div>
+
+      <div class="client-logo">
+        <img src="mitras-dudi.png" alt="Mitras Dudi">
+      </div>
+
+
+      <div class="client-logo">
+        <img src="toyota-tsusho-indonesia.png" alt="Toyota Tsusho Indonesia">
+      </div>
+
+      <div class="client-logo">
+        <img src="fisipu-open.png" alt="FISIP UI Open">
+      </div>
+
+      <div class="client-logo">
+        <img src="jakarta-sneaker-day.png" alt="Jakarta Sneaker Day">
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     PORTFOLIO
+========================= -->
+
+<section
+  class="gallery"
+  id="work"
+>
+
+  <div class="section-head">
+
+    <div>
+
+      <p class="eyebrow">
+        OUR PORTFOLIO
+      </p>
+
+      <h2>
+        SELECTED WORKS
+      </h2>
+
+    </div>
+
+    <span>
+      01–42
+    </span>
+
+  </div>
+
+
+  <div
+    class="grid"
+    id="videoGrid"
+  ></div>
+
+</section>
+
+
+<!-- =========================
+     CTA
+========================= -->
+
+<section
+  class="cta"
+  id="contact"
+>
+
+  <div>
+
+    <p class="eyebrow">
+      READY TO START?
+    </p>
+
+    <h2>
+      YOUR NEXT PROJECT
+      <br />
+      STARTS WITH AN IDEA.
+    </h2>
+
+  </div>
+
+
+  <a
+    class="btn btn-dark"
+    href="https://wa.me/6285133997317" target="_blank" rel="noopener noreferrer"
+  >
+    LET'S WORK TOGETHER →
+  </a>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+  <img
+    alt="Cek Artis"
+    src="cek-artis-logo.png"
+  />
+
+  <p>
+    Creative Art Solutions
+    <br />
+    Creative Event & Experience Portfolio
+  </p>
+
+  <div class="footer-contact">
+    <strong>CONTACT PERSON :</strong>
+
+    <div>Josy Prasetaya</div>
+
+    <div>
+      <a
+        href="https://wa.me/6285133997317"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        +62 851 3399 7317
+      </a>
+    </div>
+
+    <div>Jakarta, Indonesia</div>
+
+    <div>
+      <a href="mailto:cekartisindonesia@gmail.com">
+        cekartisindonesia@gmail.com
+      </a>
+    </div>
+  </div>
+
+  <small>
+    © 2026 Cek Artis.
+  </small>
+
+</footer>
+<!-- =========================
+     SHOWREEL MODAL
+========================= -->
+
+<div
+  aria-hidden="true"
+  aria-labelledby="showreelModalTitle"
+  aria-modal="true"
+  class="showreel-modal"
+  id="showreelModal"
+  role="dialog"
+>
+
+  <div
+    class="showreel-modal-backdrop"
+    data-showreel-close=""
+  ></div>
+
+
+  <div
+    class="showreel-modal-panel"
+    role="document"
+  >
+
+    <div class="showreel-modal-top">
+
+      <div>
+
+        <p class="eyebrow">
+          CEK ARTIS SHOWREEL
+        </p>
+
+        <h2 id="showreelModalTitle">
+          SELECTED EVENT FILM
+        </h2>
+
+      </div>
+
+
+      <button
+        aria-label="Close showreel"
+        class="showreel-modal-close"
+        data-showreel-close=""
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      class="showreel-modal-video"
+      id="showreelModalVideo"
+    ></div>
+
+  </div>
+
+</div>
+<button id="motion" class="motion-toggle" aria-pressed="false">Pause motion Ⅱ</button><script src="script.js?v=cek-artis-1"></script><script type="module" src="app.js?v=cek-artis-1"></script>
+</body>
+
+</html>
