@@ -7542,3 +7542,198 @@ Buat beberapa logo panjang mengambil ruang lebih besar
   .wk-more{display:none}
   .wk-caption{flex-direction:column;gap:4px}
 }
+
+
+/* ==========================================================
+   CONSISTENCY PASS — one type scale, balanced client logos
+   (kept last so it wins over the earlier layered overrides)
+   ========================================================== */
+
+:root{
+  --t-title:clamp(40px,4.4vw,64px);
+  --t-eyebrow:12px;
+  --t-body:16px;
+  --t-card:16px;
+}
+
+/* section titles: same size, weight, rhythm everywhere */
+#showreel h2,
+#creativeJourney .journey-title,
+#services .clients-title,
+#work .section-head h2,
+#contact h2{
+  font-size:var(--t-title) !important;
+  line-height:.94 !important;
+  letter-spacing:-.035em !important;
+  font-weight:900 !important;
+  text-transform:uppercase;
+  margin-top:0 !important;
+}
+
+/* eyebrows: one style */
+#home .eyebrow,
+#showreel .eyebrow,
+#creativeJourney .journey-eyebrow,
+#services .clients-eyebrow,
+#work .eyebrow,
+#contact .eyebrow{
+  font-size:var(--t-eyebrow) !important;
+  font-weight:800 !important;
+  letter-spacing:.2em !important;
+  line-height:1.4 !important;
+  text-transform:uppercase;
+  color:var(--lime) !important;
+  margin-bottom:18px !important;
+}
+
+/* supporting copy */
+#home .lead,
+#creativeJourney .journey-intro,
+#services .clients-description{
+  font-size:var(--t-body) !important;
+  line-height:1.65 !important;
+  color:rgba(255,255,255,.72) !important;
+  max-width:440px !important;
+}
+#services .clients-description{margin:22px 0 36px !important}
+
+/* small card titles */
+#showreel h3,
+#creativeJourney .journey-step h3{
+  font-size:var(--t-card) !important;
+  line-height:1.3 !important;
+  letter-spacing:.02em !important;
+}
+#creativeJourney .journey-step p{
+  font-size:14px !important;
+  line-height:1.6 !important;
+}
+
+/* ---------- creative journey: no overlap, calmer proportions ---------- */
+#creativeJourney .journey-top{
+  grid-template-columns:minmax(360px,.9fr) minmax(0,1.5fr) !important;
+  min-height:0 !important;
+}
+#creativeJourney .journey-title{max-width:520px !important}
+#creativeJourney .journey-flow{margin-top:40px !important}
+#creativeJourney .journey-step{min-height:0 !important;padding:0 22px 26px !important}
+#creativeJourney .journey-number{font-size:52px !important}
+#creativeJourney .journey-bottom-copy h3,
+#creativeJourney .journey-bottom-copy h3 span{
+  font-size:clamp(26px,2.4vw,34px) !important;
+  line-height:1.08 !important;
+  letter-spacing:-.02em !important;
+  text-align:center !important;
+}
+
+/* journey steps: icons line up at the bottom of every column */
+#creativeJourney .journey-step{display:flex !important;flex-direction:column;align-items:center}
+#creativeJourney .journey-number{align-self:flex-start}
+#creativeJourney .journey-icon{margin-top:auto !important}
+
+/* even vertical rhythm between sections */
+#services.clients-section{padding-top:72px !important;padding-bottom:72px !important}
+#services .clients-container{min-height:0 !important}
+#work{padding-top:72px !important;padding-bottom:88px !important}
+
+/* stats: 2 x 2 on small screens instead of 4 tall rows */
+@media (max-width:700px){
+  #showreel .showreel-stats{grid-template-columns:1fr 1fr !important;padding:0 !important}
+  #showreel .showreel-stats > div{
+    min-height:0 !important;
+    padding:20px 14px 20px 16px !important;
+    border-right:0 !important;
+    border-bottom:0 !important;
+    display:flex !important;flex-direction:column !important;align-items:flex-start !important;
+  }
+  #showreel .showreel-stats > div:nth-child(odd){border-right:1px solid rgba(255,255,255,.1) !important}
+  #showreel .showreel-stats > div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.1) !important}
+  #showreel .showreel-stats > div::before{
+    position:static !important;transform:none !important;width:auto !important;
+    font-size:24px !important;margin-bottom:10px;text-align:left !important;
+  }
+  #showreel .showreel-stats strong{font-size:32px !important}
+  #showreel .showreel-stats span{margin-top:8px !important;font-size:10px !important;letter-spacing:.08em}
+
+  /* hero: no dead space — copy, then the cube right under it */
+  .hero.hero-text-only{min-height:0 !important;padding:120px 24px 400px !important}
+  #services.clients-section,#work{padding-top:56px !important;padding-bottom:56px !important}
+  #creativeJourney .journey-step{display:grid !important;align-items:start}
+}
+
+/* ---------- client logos: equal cells, optically balanced sizes ---------- */
+#clientsLogoGrid{
+  --logo:62px;
+  display:flex !important;
+  flex-wrap:wrap !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:6px 0 !important;
+}
+#clientsLogoGrid .client-logo{
+  flex:0 0 20% !important;
+  width:auto !important;
+  height:104px !important;
+  padding:0 12px;
+  box-sizing:border-box;
+}
+#clientsLogoGrid .client-logo img{
+  height:calc(var(--logo) * var(--k, .6)) !important;
+  width:auto !important;
+  max-width:100% !important;
+  max-height:none !important;
+  transform:none !important;
+  object-fit:contain;
+}
+#clientsLogoGrid .client-logo img[src*="indihome"]{border-radius:4px}
+
+@media (max-width:1100px){
+  #clientsLogoGrid .client-logo{flex-basis:25% !important}
+}
+
+/* ---------- mobile ---------- */
+@media (max-width:700px){
+  :root{--t-title:clamp(34px,10vw,46px)}
+
+  #creativeJourney .journey-top{grid-template-columns:1fr !important}
+  #creativeJourney .journey-flow{
+    grid-template-columns:1fr !important;
+    margin-top:28px !important;
+    gap:0 !important;
+  }
+  #creativeJourney .journey-step{
+    display:grid !important;
+    grid-template-columns:56px 1fr;
+    column-gap:14px;
+    align-items:start;
+    text-align:left !important;
+    padding:18px 0 !important;
+    border-right:0 !important;
+    border-bottom:1px solid rgba(255,106,26,.16) !important;
+  }
+  #creativeJourney .journey-step:last-child{border-bottom:0 !important}
+  #creativeJourney .journey-number{
+    grid-row:1 / span 2;
+    font-size:40px !important;
+    margin:0 !important;
+  }
+  #creativeJourney .journey-node,
+  #creativeJourney .journey-icon{display:none !important}
+  #creativeJourney .journey-step h3{margin:4px 0 6px !important;text-align:left !important}
+  #creativeJourney .journey-step p{margin:0 !important;text-align:left !important;max-width:none !important}
+
+  #clientsLogoGrid{--logo:44px}
+  #clientsLogoGrid .client-logo{
+    flex-basis:25% !important;
+    height:76px !important;
+    padding:0 6px;
+  }
+}
+
+/* banner text truly centered in its box */
+#creativeJourney .journey-bottom-copy h3{width:auto !important;margin:0 auto !important}
+#creativeJourney .journey-step p{margin-bottom:18px !important}
+#services.clients-section{padding-top:40px !important}
+@media (max-width:700px){#services.clients-section{padding-top:40px !important}}
+#creativeJourney .journey-bottom{display:block !important}
+#creativeJourney .journey-bottom-copy{width:100% !important;justify-content:center !important}
