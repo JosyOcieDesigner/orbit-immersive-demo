@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cek Artis — The Journey</title>
+  <meta name="description" content="Cek Artis — Creative Event & Experience Agency. A cinematic journey from idea to stage." />
+  <meta name="theme-color" content="#050506" />
+  <link rel="icon" href="../cek-artis-logo.png" />
+  <link rel="stylesheet" href="journey.css?v=1" />
+</head>
+<body>
+  <div class="loader" id="loader"><span>CEK ARTIS</span><i></i></div>
+
+  <canvas id="world" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <header class="top">
+    <a class="brand" href="../"><img src="../cek-artis-logo.png" alt="Cek Artis" /><span>Creative Art Solutions</span></a>
+    <a class="talk" href="../#contact">Let's talk ↗</a>
+  </header>
+
+  <nav class="rail" aria-label="Journey progress">
+    <div class="rail-bar"><i id="railFill"></i></div>
+    <ol id="railList">
+      <li data-i="0">Intro</li>
+      <li data-i="1">Strategy</li>
+      <li data-i="2">Campaign</li>
+      <li data-i="3">Event</li>
+      <li data-i="4">Activation</li>
+      <li data-i="5">Contact</li>
+    </ol>
+  </nav>
+
+  <main class="panels">
+    <section class="panel hero" data-from="0" data-to="0.085">
+      <p class="kicker">✦ Creative Event &amp; Experience Agency</p>
+      <h1>Above every idea,<br /><em>an experience.</em></h1>
+      <p class="scroll-hint"><span></span>Scroll to begin the journey</p>
+    </section>
+
+    <section class="panel" data-from="0.15" data-to="0.27">
+      <p class="kicker">01 — Strategy &amp; Creative Direction</p>
+      <h2>Start above<br />the noise.</h2>
+      <p class="desc">Every project begins with an insight worth building on — then we dive in.</p>
+    </section>
+
+    <section class="panel right" data-from="0.35" data-to="0.47">
+      <p class="kicker">02 — Campaign &amp; Content</p>
+      <h2>Light up<br />the city.</h2>
+      <p class="desc">Campaigns and content made to reach every screen, street and feed.</p>
+    </section>
+
+    <section class="panel" data-from="0.54" data-to="0.67">
+      <p class="kicker">03 — Event Production</p>
+      <h2>Built for<br />the moment.</h2>
+      <p class="desc">From rigging and lighting to the final encore — we produce it end to end.</p>
+    </section>
+
+    <section class="panel right" data-from="0.73" data-to="0.85">
+      <p class="kicker">04 — Brand Activation</p>
+      <h2>Brands people<br />can step into.</h2>
+      <p class="desc">Activations that turn audiences into participants — and moments into memories.</p>
+    </section>
+
+    <section class="panel cta" data-from="0.92" data-to="1.01">
+      <p class="kicker">100+ events · 50+ brands · 15+ years</p>
+      <h2>Let's create what<br /><em>people remember.</em></h2>
+      <div class="actions">
+        <a class="btn solid" href="../#contact">Start a project ↗</a>
+        <a class="btn" href="../#work">See our work</a>
+      </div>
+    </section>
+  </main>
+
+  <div class="spacer" aria-hidden="true"></div>
+
+  <noscript><p class="nojs">This experience needs JavaScript. <a href="../">Visit the main site</a>.</p></noscript>
+  <script type="module" src="journey.js?v=1"></script>
+</body>
+</html>
