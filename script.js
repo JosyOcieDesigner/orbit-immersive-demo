@@ -1,445 +1,172 @@
 const BASE = "./";
 
+/* ==========================================================
+   PORTFOLIO — SELECTED WORKS (simplified)
+   type: event | video | live (streaming / virtual) | digital
+   ========================================================== */
+
 const videos = [
-  {
-    id:"p5H_neI8nSA",
-    title:"Creative Event",
-    category:"Creative Direction • Event Experience",
-    thumbnail:"project-01.png",
-    hidePlay:true
-  },
+  { id:"p5H_neI8nSA", title:"Aximmetry Streaming Event", client:"Kemendikbudristek", year:2022, type:"live" },
+  { id:"7Mjo9ZoQKdk", title:"After Effects Graphic Development", client:"Jafra", year:2020, type:"digital" },
+  { id:"78YeVpyMJgE", title:"Midyear Meeting Broadcast", client:"Mandiri Utama Finance", year:2023, type:"live" },
+  { id:"o-jr_uCeVGc", title:"Reuni Akbar 55 Tahun", client:"FISIP UI", year:2022, type:"event" },
+  { id:"SZuYLtXobTw", title:"Gala Dinner", client:"Ferrari Owners Club Indonesia", year:2022, type:"event" },
+  { id:"RYHhRRq4vmk", title:"Launching Tujuh Kebiasaan", client:"Kemendikbudristek", year:2024, type:"event" },
+  { id:"Ysb_F_TWdBM", title:"Movie Screening", client:"Telkomsel × Prime Video", year:2024, type:"event" },
+  { id:"ztzvE9rnH9U", title:"Gelar Wicara Puspeka", client:"Kemendikbudristek", year:2022, type:"event" },
+  { id:"6i2qeBiPmrM", title:"Midyear Meeting", client:"Mandiri Utama Finance", year:2023, type:"event" },
+  { id:"bmD3KTpkQu8", title:"Annual Meeting", client:"Mandiri Utama Finance", year:2025, type:"event" },
+  { id:"aNVfmG6Io88", title:"Interview Series", client:"Mitras DUDI", year:2023, type:"video" },
+  { id:"vpmbdMpktXI", title:"Music Video — Andien Medley", client:"Kemendikbudristek", year:2021, type:"video" },
+  { id:"nSuQSeqH0iI", title:"Launching Manajemen Talenta", client:"Kemendikdasmen", year:2025, type:"event" },
+  { id:"4tqC6Hr1R5E", title:"Farewell Party", client:"Kemendikbudristek", year:2024, type:"event" },
+  { id:"CfSAYpalJAE", title:"Short Film Anti-Bullying", client:"Kemendikbudristek", year:2025, type:"video" },
+  { id:"1G8XVFR8NeQ", title:"Midyear Touring", client:"Mandiri Utama Finance", year:2023, type:"video" },
+  { id:"x93EqiUeD6c", title:"Untukmu Indonesiaku", client:"Bappenas", year:2021, type:"event" },
+  { id:"v7SNZDYfVOQ", title:"Alumni Gathering", client:"FISIP UI", year:2024, type:"event" },
+  { id:"a6JZUictggw", title:"Music Video — Pelajar Pancasila", client:"Kemendikbudristek", year:2023, type:"video" },
+  { id:"qIE1wK0Zf2o", title:"Praktik Baik Program", client:"Kemendikbudristek", year:2023, type:"event" },
+  { id:"Qbv4WrXNDXM", title:"Online Graduation", client:"Universitas Prasetiya Mulya", year:2020, type:"live" },
+  { id:"kVx6Bget3Wk", title:"Opening Video — Formula One", client:"Mandiri Utama Finance", year:2021, type:"digital" },
+  { id:"Ww2o08iwjF4", title:"Tunas Bhinneka Gathering", client:"Kemendikbudristek", year:2024, type:"video" },
+  { id:"EFi6plBvvSg", title:"Product Launch Video", client:"Telkom Indonesia", year:2024, type:"video" },
+  { id:"mWOWWVG1gdk", title:"Staff Gathering", client:"Toyota Tsusho Indonesia", year:2023, type:"event" },
+  { id:"hsdsg711GOw", title:"Employee Gathering — Mission Impossible", client:"Castrol", year:2023, type:"event" },
+  { id:"K3IL5DFYE1Y", title:"Pusaka Days Exhibition", client:"Kemendikbudristek", year:2024, type:"event" },
+  { id:"iFeY5ShrP_8", title:"Awarding Night", client:"Kemendikdasmen", year:2024, type:"event" },
+  { id:"jddCyUzLeBQ", title:"Midyear Meeting", client:"Mandiri Utama Finance", year:2024, type:"event" },
+  { id:"kc7d9YxAAeM", title:"Unreal Engine Opening", client:"Mandiri Utama Finance", year:2025, type:"digital" },
+  // 31 & 32: video IDs swapped so each matches its thumbnail
+  { id:"n_zRjZcywXM", title:"Nobar NBA Final", client:"NBA × Prime Video", year:2026, type:"event" },
+  { id:"CEhWNUVJiB8", title:"3x3 Shoot & Win Competition", client:"Telkomsel", year:2026, type:"event" },
+  { id:"oUe9WBMy-Is", title:"Rukun Sama Teman", client:"Kemendikbudristek", year:2026, type:"video" },
+  { id:"cQAOSfosogE", title:"Business Revamp", client:"BCA", year:2020, type:"live" },
+  { id:"E2PQuEoaRgg", title:"Virtual Exhibition", client:"BCA", year:2020, type:"live" },
+  { id:"Kr1njc5bDb8", title:"Kick Off Meeting", client:"Mandiri Utama Finance", year:2021, type:"live" },
+  { id:"E1cNRHAcHfw", title:"Intimate Dinner", client:"Mandiri Utama Finance", year:2021, type:"event" },
+  { id:"fytjaZ4skac", title:"Anugerah Tata Bandha Negara", client:"Kementerian ESDM", year:2021, type:"video" },
+  { id:"Iuh_6cuiazc", title:"Animated Explainer", client:"IndiHome", year:2021, type:"video" },
+  { id:"JS_ngll75OA", title:"Virtual Sneaker Exhibition", client:"Jakarta Sneaker Day", year:2020, type:"digital" },
+  { id:"B4fUzJI2VRM", title:"Launching Lagu Rukun Sama Teman", client:"Kemendikbudristek", year:2026, type:"event" },
+  { id:"V1hNhzusDok", title:"FISIP UI Open Badminton", client:"FISIP UI", year:2023, type:"event" }
+].map((v, i) => ({ ...v, thumbnail:`project-${String(i + 1).padStart(2, "0")}.png` }));
 
-  {
-    id:"7Mjo9ZoQKdk",
-    title:"Project 02",
-    category:"Event Experience",
-    thumbnail:"project-02.png",
-    hidePlay:true
-  },
-
-  {
-    id:"78YeVpyMJgE",
-    title:"Project 03",
-    category:"Brand Activation",
-    thumbnail:"project-03.png",
-    hidePlay:true
-  },
-
-  {
-    id:"o-jr_uCeVGc",
-    title:"Project 04",
-    category:"Live Event",
-    thumbnail:"project-04.png",
-    hidePlay:true
-  },
-
-  {
-    id:"SZuYLtXobTw",
-    title:"Project 05",
-    category:"Campaign Experience",
-    thumbnail:"project-05.png",
-    hidePlay:true
-  },
-
-  {
-    id:"RYHhRRq4vmk",
-    title:"Project 06",
-    category:"Event Production",
-    thumbnail:"project-06.png",
-    hidePlay:true
-  },
-
-  {
-    id:"Ysb_F_TWdBM",
-    title:"Project 07",
-    category:"Creative Direction",
-    thumbnail:"project-07.png",
-    hidePlay:true
-  },
-
-  {
-    id:"ztzvE9rnH9U",
-    title:"Project 08",
-    category:"Event Documentation",
-    thumbnail:"project-08.png",
-    hidePlay:true
-  },
-
-  {
-    id:"6i2qeBiPmrM",
-    title:"Project 09",
-    category:"Corporate Event",
-    thumbnail:"project-09.png",
-    hidePlay:true
-  },
-
-    {
-    id:"bmD3KTpkQu8",
-    title:"Project 10",
-    category:"Product Launch",
-    thumbnail:"project-10.png",
-    hidePlay:true
-  },
-
-  {
-    id:"aNVfmG6Io88",
-    title:"Project 11",
-    category:"Entertainment Event",
-    thumbnail:"project-11.png",
-    hidePlay:true
-  },
-
-  {
-    id:"vpmbdMpktXI",
-    title:"Project 12",
-    category:"Brand Experience",
-    thumbnail:"project-12.png",
-    hidePlay:true
-  },
-
-  {
-    id:"nSuQSeqH0iI",
-    title:"Project 13",
-    category:"Event Recap",
-    thumbnail:"project-13.png",
-    hidePlay:true
-  },
-
-  {
-    id:"4tqC6Hr1R5E",
-    title:"Project 14",
-    category:"Creative Event",
-    thumbnail:"project-14.png",
-    hidePlay:true
-  },
-
-  {
-    id:"CfSAYpalJAE",
-    title:"Project 15",
-    category:"Creative Event",
-    thumbnail:"project-15.png",
-    hidePlay:true
-  },
-
-  {
-    id:"1G8XVFR8NeQ",
-    title:"Project 16",
-    category:"Creative Event",
-    thumbnail:"project-16.png",
-    hidePlay:true
-  },
-
-  {
-    id:"x93EqiUeD6c",
-    title:"Project 17",
-    category:"Creative Event",
-    thumbnail:"project-17.png",
-    hidePlay:true
-  },
-
-  {
-    id:"v7SNZDYfVOQ",
-    title:"Project 18",
-    category:"Creative Event",
-    thumbnail:"project-18.png",
-    hidePlay:true
-  },
-
-  {
-    id:"a6JZUictggw",
-    title:"Project 19",
-    category:"Creative Event",
-    thumbnail:"project-19.png",
-    hidePlay:true
-  },
-
-   {
-    id:"qIE1wK0Zf2o",
-    title:"Project 20",
-    category:"Creative Event",
-    thumbnail:"project-20.png",
-    hidePlay:true
-  },
-
-  {
-  id:"Qbv4WrXNDXM",
-  title:"Project 21",
-  category:"Creative Event",
-  thumbnail:"project-21.png",
-  hidePlay:true
-},
-
-  {
-    id:"kVx6Bget3Wk",
-    title:"Project 22",
-    category:"Creative Event",
-    thumbnail:"project-22.png",
-    hidePlay:true
-  },
-
-  {
-    id:"Ww2o08iwjF4",
-    title:"Project 23",
-    category:"Creative Event",
-    thumbnail:"project-23.png",
-    hidePlay:true
-  },
-
-  {
-    id:"EFi6plBvvSg",
-    title:"Project 24",
-    category:"Creative Event",
-    thumbnail:"project-24.png",
-    hidePlay:true
-  },
-
-  {
-    id:"mWOWWVG1gdk",
-    title:"Project 25",
-    category:"Creative Event",
-    thumbnail:"project-25.png",
-    hidePlay:true
-  },
-
-  {
-    id:"hsdsg711GOw",
-    title:"Project 26",
-    category:"Creative Event",
-    thumbnail:"project-26.png",
-    hidePlay:true
-  },
-
-  {
-    id:"K3IL5DFYE1Y",
-    title:"Project 27",
-    category:"Creative Event",
-    thumbnail:"project-27.png",
-    hidePlay:true
-  },
-
-  {
-    id:"iFeY5ShrP_8",
-    title:"Project 28",
-    category:"Creative Event",
-    thumbnail:"project-28.png",
-    hidePlay:true
-  },
-
-  {
-    id:"jddCyUzLeBQ",
-    title:"Project 29",
-    category:"Creative Event",
-    thumbnail:"project-29.png",
-    hidePlay:true
-  },
-
-  {
-    id:"kc7d9YxAAeM",
-    title:"Project 30",
-    category:"Creative Event",
-   thumbnail:"project-30.png",
-hidePlay:true
-},
-
-{
-  id:"CEhWNUVJiB8",
-  title:"Project 31",
-  category:"Creative Event",
-  thumbnail:"project-31.png",
-  hidePlay:true
-},
-
-{
-  id:"n_zRjZcywXM",
-  title:"Project 32",
-  category:"Creative Event",
-  thumbnail:"project-32.png",
-  hidePlay:true
-},
-
-{
-  id:"oUe9WBMy-Is",
-  title:"Project 33",
-  category:"Creative Event",
-  thumbnail:"project-33.png",
-  hidePlay:true
-},
-
-{
-  id:"cQAOSfosogE",
-  title:"Project 34",
-  category:"Creative Event",
-  thumbnail:"project-34.png",
-  hidePlay:true
-},
-
-{
-  id:"E2PQuEoaRgg",
-  title:"Project 35",
-  category:"Creative Event",
-  thumbnail:"project-35.png",
-  hidePlay:true
-},
-
-{
-  id:"Kr1njc5bDb8",
-  title:"Project 36",
-  category:"Creative Event",
-  thumbnail:"project-36.png",
-  hidePlay:true
-},
-
-{
-  id:"E1cNRHAcHfw",
-  title:"Project 37",
-  category:"Creative Event",
-  thumbnail:"project-37.png",
-  hidePlay:true
-},
-
-{
-  id:"fytjaZ4skac",
-  title:"Project 38",
-  category:"Creative Event",
-  thumbnail:"project-38.png",
-  hidePlay:true
-},
-
-{
-  id:"Iuh_6cuiazc",
-  title:"Project 39",
-  category:"Creative Event",
-  thumbnail:"project-39.png",
-  hidePlay:true
-},
-
-{
-  id:"JS_ngll75OA",
-  title:"Project 40",
-  category:"Creative Event",
-  thumbnail:"project-40.png",
-  hidePlay:true
-},
-
-{
-  id:"B4fUzJI2VRM",
-  title:"Project 41",
-  category:"Creative Event",
-  thumbnail:"project-41.png",
-  hidePlay:true
-},
-
-{
-  id:"V1hNhzusDok",
-  title:"Project 42",
-  category:"Creative Event",
-  thumbnail:"project-42.png",
-  hidePlay:true
-}
-
+const WORK_TYPES = [
+  ["all", "All"],
+  ["event", "Event"],
+  ["video", "Video"],
+  ["live", "Streaming & Virtual"],
+  ["digital", "Digital"]
 ];
+const WORKS_PREVIEW = 8;
 
 const grid = document.getElementById("videoGrid");
+
 function thumbSrc(v) {
-  return v.thumbnail.startsWith("http")
-    ? v.thumbnail
-    : `${BASE}${v.thumbnail}?v=20260829-1`;
+  return `${BASE}${v.thumbnail}?v=20260829-1`;
 }
 
-function stopOtherPlayers(currentCard) {
-  document.querySelectorAll(".card.is-playing").forEach(card => {
-    if (card !== currentCard) {
-      const frame = card.querySelector(".video-frame");
-      if (frame) frame.remove();
+(function buildWorks() {
+  if (!grid) return;
+  const section = grid.closest("section");
+  const counter = section && section.querySelector(".section-head > span");
+  if (counter) counter.textContent = `${videos.length} projects`;
 
-      const btn = card.querySelector(".thumb");
-      if (btn) btn.classList.remove("hidden");
+  // newest first
+  const list = videos
+    .map((v, i) => ({ ...v, order: i }))
+    .sort((a, b) => b.year - a.year || a.order - b.order);
 
-      card.classList.remove("is-playing");
-    }
-  });
-}
+  const filters = document.createElement("div");
+  filters.className = "wk-filters";
+  filters.setAttribute("role", "tablist");
+  filters.innerHTML = WORK_TYPES.map(([key, label]) => {
+    const n = key === "all" ? list.length : list.filter(v => v.type === key).length;
+    return `<button type="button" role="tab" data-type="${key}" aria-selected="${key === "all"}">${label}<span>${n}</span></button>`;
+  }).join("");
 
-function playInline(card, button, video) {
-  if (card.classList.contains("is-playing")) return;
+  grid.className = "wk-grid";
+  grid.innerHTML = "";
+  grid.before(filters);
 
-  stopOtherPlayers(card);
+  const more = document.createElement("button");
+  more.type = "button";
+  more.className = "wk-more";
+  grid.after(more);
 
-  const frame = document.createElement("div");
-  frame.className = "video-frame";
-
-  const iframe = document.createElement("iframe");
-
-  iframe.src =
-  `https://www.youtube-nocookie.com/embed/${video.id}` +
-  `?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1`;
-
-  iframe.title = video.title;
-  iframe.allow =
-  "autoplay; fullscreen; encrypted-media; picture-in-picture";
-  iframe.allowFullscreen = true;
-
-  frame.appendChild(iframe);
-  card.insertBefore(frame, button);
-
-  button.classList.add("hidden");
-  card.classList.add("is-playing");
-}
-
-if (grid) {
-  videos.forEach((v, i) => {
-    const card = document.createElement("article");
-    card.className = "card";
-
-    const button = document.createElement("button");
-    button.className = "thumb";
-    button.type = "button";
-    button.setAttribute("aria-label", `Play ${v.title}`);
-
-    button.oncontextmenu = e => e.preventDefault();
-
-    const img = document.createElement("img");
-    img.src = thumbSrc(v);
-    img.alt = v.title;
-    img.draggable = false;
-    img.loading = "lazy";
-
-    const play = document.createElement("div");
-    play.className = "play";
-    play.textContent = "▶";
-
-  button.append(img);
-
-if (!v.hidePlay) {
-  button.append(play);
-}
-button.addEventListener("click", () => {
-  playInline(card, button, v);
-});
-card.addEventListener("mouseleave", () => {
-  if (!card.classList.contains("is-playing")) return;
-
-  const frame = card.querySelector(".video-frame");
-  if (frame) frame.remove();
-
-  button.classList.remove("hidden");
-  card.classList.remove("is-playing");
-});
-    const info = document.createElement("div");
-    info.className = "card-info";
-
-    info.innerHTML = `
-      <div>
-        <h3>${v.title}</h3>
-        <p>${v.category}</p>
-      </div>
-      <span>${String(i + 1).padStart(2, "0")}</span>
-    `;
-
-    card.append(button, info);
+  list.forEach(v => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "wk-card";
+    card.dataset.type = v.type;
+    card.setAttribute("aria-label", `Play ${v.title} — ${v.client}`);
+    card.innerHTML = `
+      <span class="wk-thumb"><img src="${thumbSrc(v)}" alt="" loading="lazy" draggable="false"><i aria-hidden="true">▶</i></span>
+      <span class="wk-info"><strong>${v.title}</strong><small>${v.client} · ${v.year}</small></span>`;
+    card.addEventListener("click", () => openWork(v));
     grid.appendChild(card);
   });
-}
+
+  let type = "all", expanded = false;
+  function render() {
+    const cards = [...grid.children];
+    const match = cards.filter(c => type === "all" || c.dataset.type === type);
+    cards.forEach(c => (c.hidden = true));
+    match.forEach((c, i) => (c.hidden = !expanded && i >= WORKS_PREVIEW));
+    const hiddenCount = Math.max(0, match.length - WORKS_PREVIEW);
+    more.hidden = hiddenCount === 0;
+    more.textContent = expanded ? "Show less ↑" : `View all ${match.length} projects ↓`;
+    filters.querySelectorAll("button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.type === type)));
+    grid.scrollLeft = 0;
+  }
+  filters.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    type = b.dataset.type;
+    expanded = false;
+    render();
+  });
+  more.addEventListener("click", () => {
+    expanded = !expanded;
+    render();
+    if (!expanded) filters.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  render();
+
+  // lightweight video lightbox
+  const box = document.createElement("div");
+  box.className = "wk-modal";
+  box.hidden = true;
+  box.innerHTML = `
+    <div class="wk-modal-bg" data-close></div>
+    <div class="wk-modal-panel" role="dialog" aria-modal="true" aria-label="Project video">
+      <button type="button" class="wk-close" data-close aria-label="Close">✕</button>
+      <div class="wk-player"></div>
+      <div class="wk-caption"><strong></strong><small></small></div>
+    </div>`;
+  document.body.appendChild(box);
+  const player = box.querySelector(".wk-player");
+  let lastFocus = null;
+
+  function openWork(v) {
+    lastFocus = document.activeElement;
+    player.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${v.title}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    box.querySelector(".wk-caption strong").textContent = v.title;
+    box.querySelector(".wk-caption small").textContent = `${v.client} · ${v.year}`;
+    box.hidden = false;
+    document.documentElement.classList.add("wk-lock");
+    box.querySelector(".wk-close").focus();
+  }
+  function closeWork() {
+    if (box.hidden) return;
+    box.hidden = true;
+    player.innerHTML = "";
+    document.documentElement.classList.remove("wk-lock");
+    if (lastFocus) lastFocus.focus();
+  }
+  box.addEventListener("click", e => { if (e.target.closest("[data-close]")) closeWork(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeWork(); });
+})();
 
 
 /* ========================================
