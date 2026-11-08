@@ -62,6 +62,90 @@ if (motionBtn) {
   titles.forEach(t => io.observe(t));
 })();
 
+/* ---------- 2b. scroll-driven 3D ---------- */
+(function scrollDepth() {
+  if (reduce) return;
+  const small = () => innerWidth < 700;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+
+  // whole sections tilt up from the floor as they arrive, and recede as they leave
+  const sections = ['#showreel', '#creativeJourney', '#services', '#work', '#contact']
+    .map(s => document.querySelector(s)).filter(Boolean);
+  sections.forEach(s => s.classList.add('depth-section'));
+
+  // hero copy falls back into depth as you scroll away
+  const heroCopy = document.querySelector('#home .hero-copy');
+  const bands = document.querySelector('.ribbon-3d');
+
+  // items that rise out of depth one by one
+  const itemSel = [
+    '#showreel article', '#showreel .showreel-stats > div', '#showreel .featured-project, #showreel .showreel-object-scene',
+    '#creativeJourney .journey-image', '#creativeJourney .journey-step', '#creativeJourney .journey-bottom',
+    '#clientsLogoGrid .cl-row', '.wk-card', '.wk-filters', '#contact .cta-actions, #contact .btn'
+  ].join(',');
+  let items = [];
+  const collect = () => {
+    items = [...document.querySelectorAll(itemSel)].filter(el => !el.closest('.wk-card[hidden]'));
+    items.forEach((el, i) => {
+      el.classList.add('depth-item');
+      if (!el.dataset.side) el.dataset.side = String(i % 2 ? 1 : -1);
+    });
+  };
+  collect();
+  const grid = document.getElementById('videoGrid');
+  if (grid) new MutationObserver(collect).observe(grid, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const vh = innerHeight, k = small() ? 0.55 : 1;
+
+    // sections: enter (0→1) while the top travels from 100% to 45% of the viewport,
+    // leave (0→1) while the bottom travels from 35% to -10%
+    sections.forEach(sec => {
+      const r = sec.getBoundingClientRect();
+      const enter = clamp((vh - r.top) / (vh * 0.55));
+      const leave = clamp((vh * 0.35 - r.bottom) / (vh * 0.45));
+      const e = 1 - enter;
+      sec.style.setProperty('--sec-rx', `${(e * 16 - leave * 10) * k}deg`);
+      sec.style.setProperty('--sec-z', `${(-e * 160 - leave * 120) * k}px`);
+      sec.style.setProperty('--sec-o', (1 - e * 0.55 - leave * 0.35).toFixed(3));
+    });
+
+    if (heroCopy) {
+      const p = clamp(scrollY / (vh * 0.9));
+      heroCopy.style.setProperty('--hero-rx', `${p * 28 * k}deg`);
+      heroCopy.style.setProperty('--hero-z', `${-p * 260 * k}px`);
+      heroCopy.style.setProperty('--hero-o', (1 - p * 0.85).toFixed(3));
+    }
+
+    if (bands) {
+      const r = bands.getBoundingClientRect();
+      const p = clamp((vh - r.top) / (vh + r.height)) - 0.5; // -0.5 .. 0.5
+      bands.style.setProperty('--band-tilt', `${p * 10}deg`);
+      bands.style.setProperty('--band-x', `${p * -120}px`);
+    }
+
+    // items: rise from depth with a slight swing to alternating sides
+    items.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      const p = clamp((vh - r.top) / (vh * 0.42));
+      const e = 1 - p;
+      const side = +el.dataset.side || 1;
+      el.style.setProperty('--sy', `${(e * 70 * k).toFixed(1)}px`);
+      el.style.setProperty('--sz', `${(-e * 220 * k).toFixed(1)}px`);
+      el.style.setProperty('--srx', `${(e * 38 * k).toFixed(2)}deg`);
+      el.style.setProperty('--sry', `${(e * 16 * side * k).toFixed(2)}deg`);
+      el.style.setProperty('--so', (0.05 + p * 0.95).toFixed(3));
+    });
+  }
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  update();
+})();
+
 /* ---------- 3. pointer tilt ---------- */
 function bindTilt(el, max = 8) {
   if (el.dataset.tilt) return;

@@ -7801,7 +7801,6 @@ Buat beberapa logo panjang mengambil ruang lebih besar
 
 /* 3. pointer tilt */
 .tilt{
-  transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) !important;
   transition:transform .35s cubic-bezier(.2,.8,.2,1) !important;
   will-change:transform;
 }
@@ -7879,4 +7878,52 @@ Buat beberapa logo panjang mengambil ruang lebih besar
 @media (prefers-reduced-motion:reduce){
   .ribbon-track{animation:none}
   .tilt{transform:none !important}
+}
+
+
+/* ==========================================================
+   SCROLL-DRIVEN 3D (depth.js → scrollDepth)
+   ========================================================== */
+.depth-ready body{perspective-origin:50% 50%}
+
+.depth-section{
+  transform:perspective(1600px) translateZ(var(--sec-z,0px)) rotateX(var(--sec-rx,0deg));
+  transform-origin:50% 0%;
+  opacity:var(--sec-o,1);
+  will-change:transform,opacity;
+}
+
+.depth-ready #home .hero-copy{
+  transform:perspective(1200px) translateZ(var(--hero-z,0px)) rotateX(var(--hero-rx,0deg));
+  transform-origin:50% 100%;
+  opacity:var(--hero-o,1);
+}
+
+.ribbon-3d .band-main{
+  transform:translateY(-50%) translateX(var(--band-x,0px)) rotateX(18deg) rotate(calc(-3deg + var(--band-tilt,0deg)));
+}
+.ribbon-3d .band-back{
+  transform:translateY(-50%) translateX(calc(var(--band-x,0px) * -1)) translateZ(-80px) rotate(calc(3.5deg - var(--band-tilt,0deg)));
+}
+
+.depth-item,
+.tilt{
+  transform:
+    perspective(1100px)
+    translate3d(0,var(--sy,0px),var(--sz,0px))
+    rotateX(calc(var(--srx,0deg) + var(--rx,0deg)))
+    rotateY(calc(var(--sry,0deg) + var(--ry,0deg))) !important;
+}
+.depth-item{
+  opacity:var(--so,1);
+  transition:transform .18s linear,opacity .18s linear;
+  transform-origin:50% 100%;
+}
+.depth-item.tilt{transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .18s linear !important}
+
+/* the logo rings keep their own perspective; only lift the row */
+#clientsLogoGrid.is-3d .cl-row.depth-item{transform-style:flat}
+
+@media (prefers-reduced-motion:reduce){
+  .depth-section,.depth-item,.depth-ready #home .hero-copy{transform:none !important;opacity:1 !important}
 }
