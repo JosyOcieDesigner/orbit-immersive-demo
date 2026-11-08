@@ -10,6 +10,13 @@ Website: https://josyociedesigner.github.io/orbit-immersive-demo/
 - `office.js` — scene Three.js (r170), titik kamera di `POINTS`, posisi laptop di `LAPTOP`
 - `models/basement-office.glb` — dioptimasi dari 32.7 MB ke 5 MB (metal-rough, WebP 2048px, meshopt)
 - `models/asus-tuf-dash-f15.glb` — WebP 2048px
+- `textures/` — tekstur detail prosedural (serat kayu, plester, kain, logam brushed, plastik, kertas) yang ditempel secara triplanar per material; geometri model tidak diubah
+
+## Finishing realistis
+
+Semua aset di ruangan diberi material PBR sesuai bahan aslinya (daftar `LOOK` di `office.js`): kayu lantai dengan clearcoat tipis, dinding plester matte, kain dengan sheen untuk sofa/kursi/karpet, logam brushed untuk lampu dan kaki meja, plastik untuk elektronik, kertas untuk buku dan poster, kaca untuk casing PC. Cahaya berasal dari posisi bohlam asli di model (lampu gantung + bayangan lembut, lampu meja, lampu berdiri), ditambah pantulan lingkungan, ambient occlusion (desktop), dan bloom hanya pada sumber cahaya. Bayangan dihitung sekali setelah model selesai dimuat.
+
+Debug: `?nopost`, `?noao`, `?notex`, `?bump=0.004`.
 
 Versi sebelumnya (halaman portfolio lengkap dengan teks) ada di riwayat git; file `style.css`, `script.js`, `app.js`, `depth.js` masih disimpan tetapi tidak dipakai lagi.
 
