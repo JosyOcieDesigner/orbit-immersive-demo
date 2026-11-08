@@ -69,9 +69,10 @@ if (motionBtn) {
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
   // whole sections tilt up from the floor as they arrive, and recede as they leave
-  const sections = ['#showreel', '#creativeJourney', '#services', '#work', '#contact']
-    .map(s => document.querySelector(s)).filter(Boolean);
-  sections.forEach(s => s.classList.add('depth-section'));
+  // re-resolved on every update: other scripts rebuild some sections after load
+  const SECTION_IDS = ['#showreel', '#creativeJourney', '#services', '#work', '#contact'];
+  const getSections = () => SECTION_IDS.map(s => document.querySelector(s)).filter(Boolean)
+    .map(s => (s.classList.add('depth-section'), s));
 
   // hero copy falls back into depth as you scroll away
   const heroCopy = document.querySelector('#home .hero-copy');
@@ -99,6 +100,8 @@ if (motionBtn) {
   function update() {
     ticking = false;
     const vh = innerHeight, k = small() ? 0.55 : 1;
+    const sections = getSections();
+    if (items.some(el => !el.isConnected) || !document.querySelector('#creativeJourney .depth-item')) collect();
 
     // sections: enter (0→1) while the top travels from 100% to 45% of the viewport,
     // leave (0→1) while the bottom travels from 35% to -10%
