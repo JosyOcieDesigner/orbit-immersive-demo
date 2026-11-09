@@ -7,6 +7,7 @@ Website berupa satu film penuh layar tanpa teks yang dijalankan dengan scroll: k
 - Di akhir scroll film berhenti di adegan terakhir (frame 1080p yang tajam).
 - Ikon mouse/swipe di bawah sebagai petunjuk scroll, hilang saat mulai scroll.
 - Frame dimuat bertahap (kerangka kasar dulu, lalu diisi) supaya scroll langsung bisa dipakai.
+- Performa: frame di-decode di latar belakang (`createImageBitmap`) hanya sekitar posisi scroll (±36 frame desktop, ±24 HP) lalu dilepas dari memori; canvas berukuran resolusi asli frame (digambar 1:1, diperbesar oleh GPU); loop gambar hanya jalan saat scroll. File gambar tidak diubah.
 
 Website: https://josyociedesigner.github.io/orbit-immersive-demo/
 

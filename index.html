@@ -10,7 +10,11 @@
   html,body{margin:0;background:#07090c;overscroll-behavior:none}
   .stage{position:fixed;inset:0;overflow:hidden;background:#07090c url(media/concert-first.jpg) center/cover no-repeat}
   /* slightly oversized so the frame can drift with the pointer for depth */
-  #film{position:absolute;left:-3%;top:-3%;width:106%;height:106%;display:block;transform:translate3d(var(--x,0),var(--y,0),0);transition:transform .9s cubic-bezier(.2,.7,.2,1);will-change:transform}
+  .layer{position:absolute;left:-3%;top:-3%;width:106%;height:106%;transform:translate3d(var(--x,0),var(--y,0),0);transition:transform .9s cubic-bezier(.2,.7,.2,1);will-change:transform}
+  /* the canvas holds frames at their own resolution; the GPU scales it to the screen */
+  #film{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #final{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;visibility:hidden}
+  #final.show{opacity:1;visibility:visible}
   .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.45))}
   .track{position:relative;pointer-events:none}
   .bar{position:fixed;left:0;top:0;height:2px;width:0;background:rgba(255,255,255,.7);transition:width .25s,opacity .8s;z-index:3}
@@ -26,7 +30,10 @@
 </head>
 <body>
 <main class="stage">
-  <canvas id="film" aria-label="Scroll: kamera menembus awan, turun ke festival, lalu masuk ke dalam tenda konser"></canvas>
+  <div class="layer" id="layer">
+    <canvas id="film" aria-label="Scroll: kamera menembus awan, turun ke festival, lalu masuk ke dalam tenda konser"></canvas>
+    <img id="final" alt="" decoding="async" />
+  </div>
   <div class="vignette"></div>
 </main>
 <div class="bar" id="bar"></div>
@@ -35,77 +42,98 @@
 <script>
 (() => {
   const COUNT = 358;                       // frames in the film (24 fps × 14.9 s)
-  const canvas = document.getElementById('film'), ctx = canvas.getContext('2d');
+  const canvas = document.getElementById('film'), ctx = canvas.getContext('2d', { alpha: false });
+  const layer = document.getElementById('layer'), finalImg = document.getElementById('final');
   const track = document.getElementById('track'), bar = document.getElementById('bar'), hint = document.getElementById('hint');
   const coarse = matchMedia('(pointer: coarse)').matches;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const slowNet = navigator.connection && (/2g|3g/.test(navigator.connection.effectiveType || '') || navigator.connection.saveData);
-  const dir = (Math.min(screen.width, screen.height) < 800 || slowNet) ? 'media/frames-540/' : 'media/frames-720/';
+  const small = Math.min(screen.width, screen.height) < 800 || slowNet;
+  const dir = small ? 'media/frames-540/' : 'media/frames-720/';
+  const FW = small ? 960 : 1280, FH = small ? 540 : 720;   // frame resolution (unchanged files)
+  const WINDOW = small ? 24 : 36;                            // decoded frames kept around the scroll position
 
   /* scroll length: ~13 mouse-wheel notches on desktop, ~12 swipes on phones */
   const distance = () => coarse ? innerHeight * 5.5 : 1300;
-  const layout = () => { track.style.height = (innerHeight + distance()) + 'px'; };
 
-  /* ---- progressive frame loading: coarse pass over the whole film first, then fill the gaps ---- */
-  const frames = new Array(COUNT); let loadedCount = 0;
-  const order = []; const seen = new Set();
+  /* ---- download: compressed files only (small), progressive order ---- */
+  const blobs = new Array(COUNT); let got = 0;
+  const order = [COUNT - 1]; const seen = new Set(order);
   for (const step of [32, 16, 8, 4, 2, 1]) for (let i = 0; i < COUNT; i += step) if (!seen.has(i)) { seen.add(i); order.push(i); }
-  if (!seen.has(COUNT - 1)) order.splice(1, 0, COUNT - 1); else { order.splice(order.indexOf(COUNT - 1), 1); order.splice(1, 0, COUNT - 1); }
   let next = 0;
-  const pump = () => {
+  const fetchNext = () => {
     if (next >= order.length) return;
-    const i = order[next++], img = new Image();
-    img.decoding = 'async';
-    img.onload = () => { frames[i] = img; loadedCount++; bar.style.width = (loadedCount / COUNT * 100) + '%'; if (loadedCount === COUNT) bar.classList.add('done'); if (Math.abs(i - shown) < 40) dirty = true; pump(); };
-    img.onerror = pump;
-    img.src = dir + String(i + 1).padStart(3, '0') + '.webp';
+    const i = order[next++];
+    fetch(dir + String(i + 1).padStart(3, '0') + '.webp')
+      .then(r => r.ok ? r.blob() : null)
+      .then(b => { if (b) { blobs[i] = b; got++; bar.style.width = (got / COUNT * 100) + '%'; if (got === COUNT) bar.classList.add('done'); if (Math.abs(i - pos) <= WINDOW) wake(); } })
+      .catch(() => {})
+      .finally(fetchNext);
   };
-  for (let k = 0; k < 8; k++) pump();
+  for (let k = 0; k < 6; k++) fetchNext();
 
-  /* sharp still for the final scene */
-  const finalImg = new Image(); let finalReady = false;
-  finalImg.onload = () => { finalReady = true; dirty = true; };
-  setTimeout(() => { finalImg.src = 'media/concert-last.jpg'; }, 1500);
+  /* ---- decode off the main thread, only near the current position ---- */
+  const bitmaps = new Map(), decoding = new Set(); let active = 0;
+  const decodeAround = c => {
+    // free frames far from the playhead so memory stays flat
+    for (const [i, bm] of bitmaps) if (Math.abs(i - c) > WINDOW + 8 && i !== shown) { bm.close && bm.close(); bitmaps.delete(i); }
+    for (let d = 0; d <= WINDOW && active < 4; d++) for (const i of d ? [c + d, c - d] : [c]) {
+      if (i < 0 || i >= COUNT || !blobs[i] || bitmaps.has(i) || decoding.has(i) || active >= 4) continue;
+      decoding.add(i); active++;
+      createImageBitmap(blobs[i]).then(bm => { bitmaps.set(i, bm); wake(); }).catch(() => {}).finally(() => { decoding.delete(i); active--; wake(); });
+    }
+  };
 
-  /* ---- drawing ---- */
+  /* ---- sizing: canvas backing store never exceeds what the frames can show ---- */
   let cw = 0, ch = 0;
   const resize = () => {
-    layout();
-    const dpr = Math.min(devicePixelRatio || 1, 2), r = canvas.getBoundingClientRect();
-    cw = canvas.width = Math.round(r.width * dpr); ch = canvas.height = Math.round(r.height * dpr);
-    dirty = true;
+    track.style.height = (innerHeight + distance()) + 'px';
+    const r = layer.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+    const k = Math.min(1, FW / (r.width * dpr), FH / (r.height * dpr));   // cover-fit: frames are drawn 1:1, never upscaled in the canvas
+    cw = canvas.width = Math.max(1, Math.round(r.width * dpr * k));
+    ch = canvas.height = Math.max(1, Math.round(r.height * dpr * k));
+    shown = -1; wake();
   };
-  const nearest = i => { for (let d = 0; d < COUNT; d++) { if (frames[i - d]) return frames[i - d]; if (frames[i + d]) return frames[i + d]; } return null; };
-  const draw = img => {
-    const s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight), w = img.naturalWidth * s, h = img.naturalHeight * s;
-    ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+  const draw = bm => {
+    const s = Math.max(cw / bm.width, ch / bm.height), w = bm.width * s, h = bm.height * s;
+    ctx.drawImage(bm, (cw - w) / 2, (ch - h) / 2, w, h);
   };
+  const nearestBitmap = i => { for (let d = 0; d < COUNT; d++) { if (bitmaps.has(i - d)) return [i - d, bitmaps.get(i - d)]; if (bitmaps.has(i + d)) return [i + d, bitmaps.get(i + d)]; } return null; };
 
-  /* ---- scroll → frame, eased so it plays like footage between wheel notches ---- */
+  /* sharp 1080p still for the resting final scene */
+  let finalReady = false;
+  finalImg.onload = () => { finalReady = true; wake(); };
+  setTimeout(() => { finalImg.src = 'media/concert-last.jpg'; }, 1200);
+
+  /* ---- scroll → frame, eased so it plays like footage; loop runs only while moving ---- */
   const target = () => { const max = Math.max(1, document.documentElement.scrollHeight - innerHeight); return Math.min(1, Math.max(0, scrollY / max)) * (COUNT - 1); };
-  let pos = target(), shown = -1, dirty = true, prev = performance.now();
-  const frame = now => {
-    requestAnimationFrame(frame);
-    const dt = Math.min(0.1, (now - prev) / 1000); prev = now;
+  let pos = target(), shown = -1, shownExact = false, running = false, prev = 0;
+  const tick = now => {
+    const dt = prev ? Math.min(0.1, (now - prev) / 1000) : 0.016; prev = now;
     const t = target();
     pos = reduce ? t : pos + (t - pos) * (1 - Math.exp(-dt * 7));
     if (Math.abs(t - pos) < 0.05) pos = t;
     const idx = Math.round(pos);
-    if (idx !== shown || dirty) {
-      const atEnd = idx >= COUNT - 1 && finalReady;
-      const img = atEnd ? finalImg : nearest(idx);
-      if (img) { draw(img); shown = idx; dirty = false; }
+    decodeAround(idx);
+    if (idx !== shown || !shownExact) {
+      const hit = nearestBitmap(idx);
+      if (hit) { draw(hit[1]); shown = idx; shownExact = hit[0] === idx; }
     }
+    finalImg.classList.toggle('show', finalReady && idx >= COUNT - 1);
     hint.classList.toggle('gone', scrollY > 20);
+    const settled = pos === t && shown === idx && shownExact;
+    if (settled && decoding.size === 0) { running = false; prev = 0; return; }
+    requestAnimationFrame(tick);
   };
+  const wake = () => { if (!running) { running = true; requestAnimationFrame(tick); } };
 
+  addEventListener('scroll', wake, { passive: true });
   addEventListener('resize', resize);
   resize();
-  requestAnimationFrame(frame);
 
-  /* gentle depth: the frame drifts against the pointer / device tilt */
-  const drift = (nx, ny) => { if (reduce) return; canvas.style.setProperty('--x', (-nx * 1.6) + '%'); canvas.style.setProperty('--y', (-ny * 1.6) + '%'); };
-  addEventListener('pointermove', e => drift(e.clientX / innerWidth - .5, e.clientY / innerHeight - .5));
+  /* gentle depth: the layer drifts against the pointer / device tilt (compositor only) */
+  const drift = (nx, ny) => { if (reduce) return; layer.style.setProperty('--x', (-nx * 1.6) + '%'); layer.style.setProperty('--y', (-ny * 1.6) + '%'); };
+  addEventListener('pointermove', e => drift(e.clientX / innerWidth - .5, e.clientY / innerHeight - .5), { passive: true });
   addEventListener('deviceorientation', e => { if (e.gamma != null) drift(Math.max(-1, Math.min(1, e.gamma / 30)) / 2, Math.max(-1, Math.min(1, (e.beta - 45) / 30)) / 2); });
 })();
 </script>
