@@ -91,3 +91,4 @@ exclude:
   - "universitas-indonesia.png"
   - "vendor"
   - "pack.py"
+  - "grade.py"
