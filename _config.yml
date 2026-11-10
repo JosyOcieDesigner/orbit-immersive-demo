@@ -1,5 +1,7 @@
-# Deploy hanya halaman film scroll. File portfolio lama tetap ada di repo, tapi tidak diunggah ke GitHub Pages.
+# Deploy hanya halaman film scroll (frame dimuat dari media/packs-*; frame satuan di media/frames-* adalah sumbernya). File portfolio lama tetap ada di repo, tapi tidak diunggah ke GitHub Pages.
 exclude:
+  - "media/frames-720"
+  - "media/frames-540"
   - "README.md"
   - "app.js"
   - "bappenas.png"
@@ -88,3 +90,4 @@ exclude:
   - "tut-wuri-handayani.png"
   - "universitas-indonesia.png"
   - "vendor"
+  - "pack.py"

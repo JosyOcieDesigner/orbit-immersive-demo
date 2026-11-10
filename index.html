@@ -49,28 +49,29 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const slowNet = navigator.connection && (/2g|3g/.test(navigator.connection.effectiveType || '') || navigator.connection.saveData);
   const small = Math.min(screen.width, screen.height) < 800 || slowNet;
-  const dir = small ? 'media/frames-540/' : 'media/frames-720/';
+  const dir = small ? 'media/packs-540/' : 'media/packs-720/';   // bundles of the WebP frames in media/frames-*/ (bytes unchanged)
   const FW = small ? 960 : 1280, FH = small ? 540 : 720;   // frame resolution (unchanged files)
   const WINDOW = small ? 24 : 36;                            // decoded frames kept around the scroll position
 
   /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈22 notches / ≈20 swipes in total) */
   const distance = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;   // same speed per frame as the first film
 
-  /* ---- download: compressed files only (small), progressive order ---- */
+  /* ---- download: frames come in a few bundle files (original WebP bytes, unchanged), progressive order ---- */
   const blobs = new Array(COUNT); let got = 0;
-  const order = [COUNT - 1]; const seen = new Set(order);
-  for (const step of [32, 16, 8, 4, 2, 1]) for (let i = 0; i < COUNT; i += step) if (!seen.has(i)) { seen.add(i); order.push(i); }
-  let next = 0;
-  const fetchNext = () => {
-    if (next >= order.length) return;
-    const i = order[next++];
-    fetch(dir + String(i + 1).padStart(3, '0') + '.webp')
-      .then(r => r.ok ? r.blob() : null)
-      .then(b => { if (b) { blobs[i] = b; got++; bar.style.width = (got / COUNT * 100) + '%'; if (got === COUNT) bar.classList.add('done'); if (Math.abs(i - pos) <= WINDOW) wake(); } })
-      .catch(() => {})
-      .finally(fetchNext);
-  };
-  for (let k = 0; k < 6; k++) fetchNext();
+  const gotFrame = i => { got++; bar.style.width = (got / COUNT * 100) + '%'; if (got === COUNT) bar.classList.add('done'); if (Math.abs(i - pos) <= WINDOW) wake(); };
+  fetch(dir + 'index.json').then(r => r.json()).then(ix => {
+    const inBundle = ix.bundles.map(() => []);
+    ix.frames.forEach((f, i) => { if (f) inBundle[f[0]].push([i, f[1], f[2]]); });
+    let next = 0;
+    const fetchNext = () => {
+      if (next >= ix.bundles.length) return;
+      const b = next++;
+      fetch(dir + ix.bundles[b]).then(r => r.ok ? r.blob() : null).then(pack => {
+        if (pack) for (const [i, off, len] of inBundle[b]) { blobs[i] = pack.slice(off, off + len, 'image/webp'); gotFrame(i); }
+      }).catch(() => {}).finally(fetchNext);
+    };
+    for (let k = 0; k < 3; k++) fetchNext();
+  });
 
   /* ---- decode off the main thread, only near the current position ---- */
   const bitmaps = new Map(), decoding = new Set(); let active = 0;

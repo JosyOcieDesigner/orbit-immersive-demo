@@ -14,8 +14,10 @@ Website: https://josyociedesigner.github.io/orbit-immersive-demo/
 ## File
 
 - `index.html` — seluruh halaman (HTML, CSS, JS)
-- `media/frames-720/` — 606 frame WebP 1280×720 untuk desktop (20 MB)
-- `media/frames-540/` — 606 frame WebP 960×540 untuk HP / koneksi lambat (14 MB)
+- `media/frames-720/` — 606 frame WebP 1280×720 untuk desktop (20 MB), sumber untuk `media/packs-720/`
+- `media/frames-540/` — 606 frame WebP 960×540 untuk HP / koneksi lambat (14 MB), sumber untuk `media/packs-540/`
+- `media/packs-720/`, `media/packs-540/` — frame yang sama digabung ke 19 file paket + `index.json` (byte gambar tidak diubah) supaya deploy GitHub Pages hanya ~45 file dan halaman cukup ~23 request. Buat ulang: `python3 pack.py media/frames-720 media/packs-720 606 32`
+- `_config.yml` — file portfolio lama dan frame satuan dikecualikan dari deploy (tetap ada di repo)
 - `media/concert-first.jpg`, `media/concert-last.jpg` — poster dan frame terakhir
 
 Versi sebelumnya (video autoplay, scene 3D basement office, portfolio lama) ada di riwayat git.
