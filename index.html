@@ -41,7 +41,7 @@
 <div class="track" id="track"></div>
 <script>
 (() => {
-  const COUNT = 358;                       // frames in the film (24 fps × 14.9 s)
+  const COUNT = 606;                       // frames: concert dive (1–358) + ending scene (359–606), 24 fps
   const canvas = document.getElementById('film'), ctx = canvas.getContext('2d', { alpha: false });
   const layer = document.getElementById('layer'), finalImg = document.getElementById('final');
   const track = document.getElementById('track'), bar = document.getElementById('bar'), hint = document.getElementById('hint');
@@ -53,8 +53,8 @@
   const FW = small ? 960 : 1280, FH = small ? 540 : 720;   // frame resolution (unchanged files)
   const WINDOW = small ? 24 : 36;                            // decoded frames kept around the scroll position
 
-  /* scroll length: ~13 mouse-wheel notches on desktop, ~12 swipes on phones */
-  const distance = () => coarse ? innerHeight * 5.5 : 1300;
+  /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈22 notches / ≈20 swipes in total) */
+  const distance = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;   // same speed per frame as the first film
 
   /* ---- download: compressed files only (small), progressive order ---- */
   const blobs = new Array(COUNT); let got = 0;
