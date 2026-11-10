@@ -41,7 +41,7 @@
 <div class="track" id="track"></div>
 <script>
 (() => {
-  const COUNT = 866;                       // frames: concert dive (1–358) + ending (359–606) + FOH trackback to camera (607–866), 24 fps
+  const COUNT = 944;                       // frames: concert dive (1–358) + flow bridge (359–362) + ending (363–610) + FOH trackback, speed-smoothed (611–944)
   const canvas = document.getElementById('film'), ctx = canvas.getContext('2d', { alpha: false });
   const layer = document.getElementById('layer'), finalImg = document.getElementById('final');
   const track = document.getElementById('track'), bar = document.getElementById('bar'), hint = document.getElementById('hint');
@@ -53,7 +53,7 @@
   const FW = small ? 960 : 1280, FH = small ? 540 : 720;   // frame resolution (unchanged files)
   const WINDOW = small ? 24 : 36;                            // decoded frames kept around the scroll position
 
-  /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈31 notches / ≈29 swipes in total) */
+  /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈34 notches / ≈31 swipes in total) */
   const distance = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;   // same speed per frame as the first film
 
   /* ---- download: frames come in a few bundle files (original WebP bytes, unchanged), progressive order ---- */

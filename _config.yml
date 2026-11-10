@@ -91,3 +91,5 @@ exclude:
   - "universitas-indonesia.png"
   - "vendor"
   - "pack.py"
+  - "smooth.py"
+  - "morph.py"
