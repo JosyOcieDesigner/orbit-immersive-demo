@@ -23,7 +23,9 @@ Setelah masuk (versi apa pun), tiga kalimat besar di tengah layar (Inter 800 kap
 | WE CONNECT. | saat awan terbuka ke festival | 65–95 |
 | WE MAKE IT HAPPEN. | sebelum masuk atap tenda | 112–148 |
 
-Setelah kalimat ketiga, scroll langsung menukik menembus atap ke depan LED panggung (frame 148–270 dipadatkan ke ±3 scroll), lalu sisa film berjalan dengan kecepatan biasa. Peta scroll → frame ada di `knots()` di `index.html`; ±4 scroll per kalimat, jeda ±2 scroll.
+Setelah kalimat ketiga, scroll langsung menukik menembus atap ke depan LED panggung dan **berakhir di frame terakhir video 1** (frame 358). Di ujung scroll muncul **panel kaca kosong** (`#info`, ±920×560px, rata tengah) untuk diisi informasi; panel hilang lagi bila di-scroll ke atas.
+
+Karena website berakhir di video 1, paket `media/packs-*` sekarang hanya berisi frame 1–358 (desktop 12 MB, HP 7,7 MB). Frame video 2–5 (359–1914) tetap ada di `media/frames-*` dan bisa dipakai lagi dengan membuat ulang paket (`pack.py ... 1914 32`) dan mengubah `COUNT` serta `knots()`. Peta scroll → frame ada di `knots()` di `index.html`; ±4 scroll per kalimat, jeda ±2 scroll.
 
 ## Film
 

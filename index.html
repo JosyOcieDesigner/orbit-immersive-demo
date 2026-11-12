@@ -93,6 +93,17 @@
     color:#eef2f4;text-shadow:0 2px 24px rgba(0,0,0,.38),0 0 30px rgba(210,225,235,.28),0 0 90px rgba(210,225,235,.14);
     opacity:0;will-change:transform,opacity,filter;transform-origin:50% 50%}
   .words .w{display:inline-block;margin:0 .02em;opacity:0;will-change:transform,opacity,filter}
+  /* empty information panel that settles in once the film reaches the LED wall */
+  .info{position:fixed;left:50%;top:50%;z-index:3;width:min(920px,86vw);height:min(560px,62vh);box-sizing:border-box;
+    border-radius:28px;border:1px solid rgba(255,255,255,.26);
+    background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(14,18,24,.42) 40%,rgba(8,10,14,.58));
+    box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.25);
+    -webkit-backdrop-filter:blur(22px) saturate(1.2);backdrop-filter:blur(22px) saturate(1.2);
+    opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-46%) scale(.94);filter:blur(10px);
+    transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.75,.2,1),filter .9s ease,visibility 0s linear .9s}
+  .info.show{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,-50%) scale(1);filter:blur(0);transition-delay:0s}
+  @media(max-width:600px){.info{width:88vw;height:64vh;border-radius:22px}}
+  @media(prefers-reduced-motion:reduce){.info{transition:opacity .3s,visibility 0s linear .3s;transform:translate(-50%,-50%);filter:none}}
   /* "Rotate your smartphone" hint after choosing Mobile Version */
   .rotate{position:fixed;inset:0;z-index:6;display:none;place-items:center;text-align:center;cursor:pointer;
     font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:#f4f7f8;background:rgba(8,9,11,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
@@ -122,6 +133,7 @@
   <p class="phrase">WE MAKE IT HAPPEN.</p>
 </div>
 <div class="track" id="track"></div>
+<section class="info" id="info" aria-label="Informasi"></section>
 <section class="intro" id="intro" aria-labelledby="intro-title">
   <div class="content">
     <div class="title">
@@ -150,7 +162,7 @@
 </div>
 <script>
 (() => {
-  const COUNT = 1914;                      // frames: concert dive (1–358) + bridge (359–362) + ending (363–610) + FOH trackback (611–944) + crew (945–1281) + crew FD to control desk (1282–1914)
+  const COUNT = 358;                       // the site now ends on the last frame of video 1 (stage + LED wall); frames 359+ stay in media/frames-* unused
   const canvas = document.getElementById('film'), ctx = canvas.getContext('2d', { alpha: false });
   const layer = document.getElementById('layer'), finalImg = document.getElementById('final');
   const track = document.getElementById('track'), bar = document.getElementById('bar'), hint = document.getElementById('hint');
@@ -168,17 +180,14 @@
   useProfile(suggested);
 
   /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈70 notches / ≈63 swipes in total) */
-  const FILM = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;     // whole film at the usual speed per frame
   const PHRASE = () => coarse ? innerHeight * 1.4 : 420;                    // scroll per phrase (~4 wheel notches)
   /* scroll px -> frame, piecewise:
      WE CREATE. in the clouds (0–55) · pause · WE CONNECT. as the clouds open (65–95) · pause ·
-     WE MAKE IT HAPPEN. before the tent roof (112–148) · quick dive through the roof straight to the LED wall (148–270) ·
-     the rest of the film at its usual speed */
+     WE MAKE IT HAPPEN. before the tent roof (112–148) · dive through the roof straight to the LED wall (148–357) · end */
   const knots = () => {
-    const D = PHRASE(), G = D * .45, pf = FILM() / (COUNT - 1);
-    const k = [[0, 0], [D, 55], [D + G, 65], [2 * D + G, 95], [2 * D + 2 * G, 112], [3 * D + 2 * G, 148], [3.8 * D + 2 * G, 270]];
-    k.push([k[k.length - 1][0] + (COUNT - 1 - 270) * pf, COUNT - 1]);
-    return k;
+    const D = PHRASE(), G = D * .45;
+    return [[0, 0], [D, 55], [D + G, 65], [2 * D + G, 95], [2 * D + 2 * G, 112], [3 * D + 2 * G, 148],
+            [3.8 * D + 2 * G, 270], [4.6 * D + 2 * G, COUNT - 1]];
   };
   const phraseStart = k => { const D = PHRASE(), G = D * .45; return k * (D + G); };
   const distance = () => { const k = knots(); return k[k.length - 1][0]; };
@@ -243,6 +252,7 @@
   setTimeout(() => { finalImg.src = 'media/concert-last.jpg'; }, 1200);
 
   /* ---- scroll → frame, eased so it plays like footage; loop runs only while moving ---- */
+  const info = document.getElementById('info');
   const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - innerHeight);
   const sTarget = () => Math.min(maxScroll(), Math.max(0, scrollY));
   const frameAt = sp => {
@@ -311,6 +321,7 @@
       if (hit) { draw(hit[1]); shown = idx; shownExact = hit[0] === idx; }
     }
     finalImg.classList.toggle('show', finalReady && idx >= COUNT - 1);
+    info.classList.toggle('show', pos >= COUNT - 1.5);          // empty info shape once we reach the LED wall
     hint.classList.toggle('gone', scrollY > 20);
     const wordsBusy = renderWords(sPos, now);
     const settled = sPos === st && shown === idx && shownExact && !wordsBusy;
