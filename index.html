@@ -23,21 +23,41 @@
   .bar{position:fixed;left:0;top:0;height:2px;width:0;background:rgba(255,255,255,.7);transition:width .25s,opacity .8s;z-index:3}
   .bar.done{opacity:0}
   /* scroll hint: mouse outline with a moving wheel (no text) */
-  .hint{position:fixed;left:50%;bottom:34px;width:26px;height:42px;margin-left:-13px;border:2px solid rgba(255,255,255,.75);border-radius:14px;box-sizing:border-box;transition:opacity .6s;z-index:2}
-  .hint::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:#fff;animation:wheel 1.6s ease-in-out infinite}
-  .hint.gone{opacity:0}
+  /* scroll hint after the opening page: icon + short label */
+  .hint{position:fixed;left:50%;bottom:30px;transform:translate(-50%,10px);z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:none;
+    font:600 11px/1 Inter,"Helvetica Neue",Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:rgba(244,247,248,.85);text-shadow:0 1px 12px rgba(0,0,0,.5);
+    opacity:0;transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+  .hint.ready{opacity:1;transform:translate(-50%,0)}
+  .hint.ready.gone{opacity:0;transform:translate(-50%,10px)}
+  .hint .icon{position:relative;width:24px;height:38px;border:2px solid rgba(255,255,255,.8);border-radius:13px;box-sizing:border-box}
+  .hint .icon::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:#fff;animation:wheel 1.6s ease-in-out infinite}
+  .hint .touch{display:none}
   @keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
-  @media (pointer:coarse){.hint{border-radius:50%;width:34px;height:34px;margin-left:-17px;border-width:2px}.hint::after{top:auto;bottom:7px;height:4px;width:4px;animation:swipe 1.6s ease-in-out infinite}}
+  @media (pointer:coarse){.hint .icon{border-radius:50%;width:32px;height:32px}.hint .icon::after{top:auto;bottom:6px;height:4px;width:4px;animation:swipe 1.6s ease-in-out infinite}.hint .mouse{display:none}.hint .touch{display:inline}}
   @keyframes swipe{0%{transform:translateY(0);opacity:1}70%{transform:translateY(-14px);opacity:0}100%{opacity:0}}
 
   /* ---------- opening page (before scrolling) ---------- */
   html.locked,html.locked body{overflow:hidden;height:100%}
-  html.locked .hint{opacity:0}
   .intro{--ink:#f4f7f8;--silver:220,230,235;position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;
     font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:var(--ink);text-align:center;
     background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(12,14,17,.15),rgba(8,9,11,.62));
     transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.7,.2,1),filter .9s ease}
-  .intro.leave{opacity:0;transform:scale(1.08);filter:blur(6px);pointer-events:none}
+  /* exit choreography once a version is chosen (about 1.6 s) */
+  .intro.leave{pointer-events:none}
+  .intro.leave.fade{opacity:0;transition:opacity .7s ease}
+  .intro .giant.split{background:none}
+  .intro .giant span{display:inline-block;background:linear-gradient(180deg,rgba(var(--silver),.34),rgba(var(--silver),.10) 70%,rgba(var(--silver),.04));-webkit-background-clip:text;background-clip:text;color:transparent;
+    --t:calc(.08s + var(--d) * 60ms);transition:transform 1.2s cubic-bezier(.3,.05,.15,1) var(--t),filter .8s ease calc(var(--t) + .25s),opacity .7s ease calc(var(--t) + .35s)}
+  .intro.leave .giant span{opacity:0;filter:blur(14px);transform:translate3d(calc(var(--o) * 38vw),calc(-6vh - (1 - var(--o) * var(--o)) * 10vh),0) scale(1.6) rotate(calc(var(--o) * 8deg))}
+  .intro h1 .line{display:block;overflow:hidden;padding:.06em 0 .1em;margin:-.06em 0 -.1em}
+  .intro h1 .line>span{display:block;transition:transform .9s cubic-bezier(.7,0,.2,1),opacity .9s ease}
+  .intro h1 .line:nth-child(2)>span{transition-delay:.08s}
+  .intro.leave h1 .line>span{transform:translateY(-115%);opacity:.2}
+  .intro .actions button{transition:transform .45s cubic-bezier(.5,0,.2,1),opacity .4s ease,background .25s ease,color .25s ease,border-color .25s ease}
+  .intro.leave .actions button{opacity:0;transform:translateY(18px)}
+  .intro.leave .actions button:nth-child(2){transition-delay:.05s}
+  .intro .burst{transition:transform 1.5s cubic-bezier(.4,0,.2,1) .15s,opacity 1.2s ease .3s}
+  .intro.leave .burst{transform:translate(-50%,-50%) scale(1.9);opacity:0}
   .intro.gone{display:none}
   /* giant word behind the headline, bleeding off both edges */
   .intro .giant{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;white-space:nowrap;pointer-events:none;user-select:none;
@@ -64,7 +84,7 @@
   .intro .giant{--tx:-50%;--ty:-50%}
   @keyframes spin{to{transform:rotate(360deg)}}
   @media(max-width:600px){.intro .giant{font-size:17vw}.intro .actions{flex-direction:column;width:min(320px,100%)}.intro button{justify-content:center}}
-  @media(prefers-reduced-motion:reduce){.intro *{animation:none!important}.intro{transition:opacity .3s}}
+  @media(prefers-reduced-motion:reduce){.intro *{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}.intro.leave.fade{transition:opacity .3s}}
   /* "Rotate your smartphone" hint after choosing Mobile Version */
   .rotate{position:fixed;inset:0;z-index:6;display:none;place-items:center;text-align:center;cursor:pointer;
     font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:#f4f7f8;background:rgba(8,9,11,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
@@ -87,14 +107,14 @@
   <div class="vignette"></div>
 </main>
 <div class="bar" id="bar"></div>
-<div class="hint" id="hint" aria-hidden="true"></div>
+<div class="hint" id="hint" aria-hidden="true"><span class="icon"></span><span class="mouse">Scroll to explore</span><span class="touch">Swipe up to explore</span></div>
 <div class="track" id="track"></div>
 <section class="intro" id="intro" aria-labelledby="intro-title">
   <div class="content">
     <div class="title">
       <div class="burst" aria-hidden="true"><svg id="burst" viewBox="-350 -350 700 700"></svg></div>
-      <p class="giant" aria-hidden="true">CEKARTIS</p>
-      <h1 id="intro-title">Creative Art<br />Innovations</h1>
+      <p class="giant" aria-hidden="true" id="giant">CEKARTIS</p>
+      <h1 id="intro-title"><span class="line"><span>Creative Art</span></span><span class="line"><span>Innovations</span></span></h1>
     </div>
     <div class="actions">
       <button type="button" data-profile="mobile" aria-label="Mobile Version, frame 960×540 lebih ringan">
@@ -221,6 +241,11 @@
   /* ---- opening page: pick a version, then the film unlocks ---- */
   const intro = document.getElementById('intro'), buttons = [...intro.querySelectorAll('button')];
   buttons.forEach(btn => btn.classList.toggle('primary', btn.dataset.profile === suggested));
+  (function splitGiant() {   // one span per letter so CEKARTIS can break apart on exit, centre letters first
+    const el = document.getElementById('giant'), word = el.textContent, mid = (word.length - 1) / 2;
+    el.classList.add('split');
+    el.innerHTML = [...word].map((ch, i) => `<span style="--o:${((i - mid) / mid).toFixed(2)};--d:${Math.round(Math.abs(i - mid))}">${ch}</span>`).join('');
+  })();
   (function drawBurst() {   // thin radiating lines like the reference, slightly irregular lengths
     const svg = document.getElementById('burst'); let d = '';
     for (let i = 0; i < 160; i++) {
@@ -233,8 +258,9 @@
     if (name !== profile) { useProfile(name); for (const [, bm] of bitmaps) bm.close && bm.close(); bitmaps.clear(); load(); resize(); }
     scrollTo(0, 0);
     document.documentElement.classList.remove('locked');
-    intro.classList.add('leave');
-    setTimeout(() => intro.classList.add('gone'), 1100);
+    intro.classList.add('leave');                                   // buttons drop, headline slides up, letters scatter
+    setTimeout(() => intro.classList.add('fade'), reduce ? 0 : 1350);  // then the veil lifts off the clouds
+    setTimeout(() => { intro.classList.add('gone'); hint.classList.add('ready'); }, reduce ? 300 : 2100);
     wake();
   };
   /* Mobile Version: ask to rotate first; continue on landscape, on tap, or after a moment if already landscape */

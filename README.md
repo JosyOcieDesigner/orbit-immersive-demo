@@ -9,6 +9,8 @@ Saat pertama dibuka tampil halaman pembuka rata tengah di atas adegan awan: kata
 
 Setelah **Mobile Version** diklik muncul petunjuk **"Rotate your smartphone"** (animasi HP berputar): hilang otomatis begitu HP dimiringkan (landscape), bisa di-tap untuk lanjut, dan kalau layar sudah landscape tampil ±2 detik lalu lanjut sendiri.
 
+Setelah memilih versi, halaman awal keluar bertahap (±2 detik): tombol turun & memudar, judul meluncur ke atas di balik garis, huruf-huruf CEKARTIS pecah dari tengah ke luar (terbang menyebar, membesar, blur), garis memancar melebar seperti warp, lalu latar memudar. Setelah itu muncul petunjuk **"Scroll to explore"** (desktop, ikon mouse) atau **"Swipe up to explore"** (HP, ikon swipe) yang hilang saat mulai scroll.
+
 Tombol yang cocok dengan perangkat tampil terisi (disarankan) dan versinya sudah mulai dimuat di belakang. Scroll terkunci sampai salah satu tombol diklik; kalau memilih versi lain, unduhan versi sebelumnya dibatalkan. Panjang scroll tetap mengikuti perangkat (mouse / sentuh). Font: Inter (Google Fonts).
 
 ## Film
