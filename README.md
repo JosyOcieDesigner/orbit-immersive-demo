@@ -1,6 +1,17 @@
 # Cek Artis — Concert Dive (scroll)
 
-Website berupa satu film penuh layar tanpa teks yang dijalankan dengan scroll: kamera menembus awan dan sorotan laser, turun ke area festival, menukik masuk lewat atap tenda kaca, masuk ke adegan konser, lalu (video ending) menyusuri penonton ke meja mixer di belakang tenda, lalu (video 3, FOH trackback) mundur dari meja FOH melewati penonton ke operator kamera, lalu (video 4, crew) pan ke crew lain di sebelahnya ke crew wanita yang memakai headset, lalu (video 5, crew FD) mundur dari crew wanita, berbelok ke sisi tenda dan berhenti di meja kontrol dengan dua operator.
+## Halaman awal
+
+Saat pertama dibuka tampil halaman pembuka rata tengah di atas adegan awan: kata besar **CEKARTIS** (perak transparan, menembus kedua tepi layar) di belakang judul **Creative Art Innovations**, garis-garis memancar yang berputar pelan, dan dua tombol:
+
+- **Mobile Version** — frame 960×540 (`media/packs-540/`, ±33 MB), lebih ringan untuk HP / koneksi lambat.
+- **Browser Version** — frame HD 1280×720 (`media/packs-720/`, ±48 MB).
+
+Tombol yang cocok dengan perangkat tampil terisi (disarankan) dan versinya sudah mulai dimuat di belakang. Scroll terkunci sampai salah satu tombol diklik; kalau memilih versi lain, unduhan versi sebelumnya dibatalkan. Panjang scroll tetap mengikuti perangkat (mouse / sentuh). Font: Inter (Google Fonts).
+
+## Film
+
+Setelah memilih versi, website berupa satu film penuh layar yang dijalankan dengan scroll: kamera menembus awan dan sorotan laser, turun ke area festival, menukik masuk lewat atap tenda kaca, masuk ke adegan konser, lalu (video ending) menyusuri penonton ke meja mixer di belakang tenda, lalu (video 3, FOH trackback) mundur dari meja FOH melewati penonton ke operator kamera, lalu (video 4, crew) pan ke crew lain di sebelahnya ke crew wanita yang memakai headset, lalu (video 5, crew FD) mundur dari crew wanita, berbelok ke sisi tenda dan berhenti di meja kontrol dengan dua operator.
 
 - Scroll menggerakkan film frame demi frame (1914 frame: concert dive 1–358, transisi 359–362, ending 363–610, FOH trackback 611–944, crew 945–1281, crew FD 1282–1914). Gerakannya dihaluskan sehingga di antara scroll terlihat seperti video berjalan.
 - Panjang scroll: kecepatan sama per frame, total sekitar 70 kali scroll mouse di desktop (~6950px), sekitar 63 kali swipe di HP. Ubah di fungsi `distance()` di `index.html`.

@@ -1,11 +1,14 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" class="locked">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Cek Artis</title>
 <link rel="icon" href="cek-artis-logo.png" />
 <link rel="preload" as="image" href="media/concert-first.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800&display=swap" rel="stylesheet" />
 <style>
   html,body{margin:0;background:#07090c;overscroll-behavior:none}
   .stage{position:fixed;inset:0;overflow:hidden;background:#07090c url(media/concert-first.jpg) center/cover no-repeat}
@@ -26,6 +29,42 @@
   @keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
   @media (pointer:coarse){.hint{border-radius:50%;width:34px;height:34px;margin-left:-17px;border-width:2px}.hint::after{top:auto;bottom:7px;height:4px;width:4px;animation:swipe 1.6s ease-in-out infinite}}
   @keyframes swipe{0%{transform:translateY(0);opacity:1}70%{transform:translateY(-14px);opacity:0}100%{opacity:0}}
+
+  /* ---------- opening page (before scrolling) ---------- */
+  html.locked,html.locked body{overflow:hidden;height:100%}
+  html.locked .hint{opacity:0}
+  .intro{--ink:#f4f7f8;--silver:220,230,235;position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;
+    font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:var(--ink);text-align:center;
+    background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(12,14,17,.15),rgba(8,9,11,.62));
+    transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.7,.2,1),filter .9s ease}
+  .intro.leave{opacity:0;transform:scale(1.08);filter:blur(6px);pointer-events:none}
+  .intro.gone{display:none}
+  /* giant word behind the headline, bleeding off both edges */
+  .intro .giant{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;white-space:nowrap;pointer-events:none;user-select:none;
+    font-weight:800;font-size:23vw;line-height:.8;letter-spacing:-.055em;
+    background:linear-gradient(180deg,rgba(var(--silver),.34),rgba(var(--silver),.10) 70%,rgba(var(--silver),.04));
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.4s cubic-bezier(.2,.7,.2,1) both}
+  /* thin radiating lines behind the centre, slowly turning */
+  .intro .burst{position:absolute;left:50%;top:50%;width:min(78vmin,700px);height:min(78vmin,700px);transform:translate(-50%,-50%);pointer-events:none;opacity:.9}
+  .intro .burst svg{width:100%;height:100%;animation:spin 90s linear infinite}
+  .intro .content{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(22px,4vh,40px);padding:0 24px}
+  .intro .title{position:relative;display:grid;place-items:center}
+  .intro h1{position:relative;margin:0;font-weight:800;font-size:clamp(42px,7vw,112px);line-height:.96;letter-spacing:-.04em;text-shadow:0 2px 40px rgba(0,0,0,.35);animation:rise 1.1s .15s cubic-bezier(.2,.7,.2,1) both}
+  .intro .actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:rise 1s .35s cubic-bezier(.2,.7,.2,1) both}
+  .intro button{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;cursor:pointer;
+    font:600 15px/1 Inter,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;color:var(--ink);
+    background:rgba(255,255,255,.06);border:1px solid rgba(var(--silver),.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    transition:transform .25s ease,background .25s ease,color .25s ease,border-color .25s ease}
+  .intro button svg{width:18px;height:18px;flex:none}
+  .intro button:hover{transform:translateY(-2px);background:rgba(255,255,255,.14)}
+  .intro button.primary{background:#e9eff1;color:#0c0e11;border-color:#e9eff1}
+  .intro button.primary:hover{background:#fff}
+  .intro button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  @keyframes rise{from{opacity:0;transform:translate(var(--tx,0),calc(var(--ty,0px) + 24px))}to{opacity:1;transform:translate(var(--tx,0),var(--ty,0))}}
+  .intro .giant{--tx:-50%;--ty:-50%}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media(max-width:600px){.intro .giant{font-size:24vw}.intro .actions{flex-direction:column;width:min(320px,100%)}.intro button{justify-content:center}}
+  @media(prefers-reduced-motion:reduce){.intro *{animation:none!important}.intro{transition:opacity .3s}}
 </style>
 </head>
 <body>
@@ -39,6 +78,23 @@
 <div class="bar" id="bar"></div>
 <div class="hint" id="hint" aria-hidden="true"></div>
 <div class="track" id="track"></div>
+<section class="intro" id="intro" aria-labelledby="intro-title">
+  <div class="content">
+    <div class="title">
+      <div class="burst" aria-hidden="true"><svg id="burst" viewBox="-350 -350 700 700"></svg></div>
+      <p class="giant" aria-hidden="true">CEKARTIS</p>
+      <h1 id="intro-title">Creative Art<br />Innovations</h1>
+    </div>
+    <div class="actions">
+      <button type="button" data-profile="mobile" aria-label="Mobile Version, frame 960×540 lebih ringan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
+        Mobile Version</button>
+      <button type="button" data-profile="browser" aria-label="Browser Version, frame HD 1280×720">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8.5 20.5h7M12 17v3.5"/></svg>
+        Browser Version</button>
+    </div>
+  </div>
+</section>
 <script>
 (() => {
   const COUNT = 1914;                      // frames: concert dive (1–358) + bridge (359–362) + ending (363–610) + FOH trackback (611–944) + crew (945–1281) + crew FD to control desk (1282–1914)
@@ -48,30 +104,44 @@
   const coarse = matchMedia('(pointer: coarse)').matches;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const slowNet = navigator.connection && (/2g|3g/.test(navigator.connection.effectiveType || '') || navigator.connection.saveData);
-  const small = Math.min(screen.width, screen.height) < 800 || slowNet;
-  const dir = small ? 'media/packs-540/' : 'media/packs-720/';   // bundles of the WebP frames in media/frames-*/ (bytes unchanged)
-  const FW = small ? 960 : 1280, FH = small ? 540 : 720;   // frame resolution (unchanged files)
-  const WINDOW = small ? 24 : 36;                            // decoded frames kept around the scroll position
+  const suggested = (Math.min(screen.width, screen.height) < 800 || slowNet) ? 'mobile' : 'browser';
+  /* two versions of the same frames (bytes unchanged): Mobile = 960×540 bundles, Browser = 1280×720 bundles */
+  const PROFILES = {
+    mobile:  { dir: 'media/packs-540/', FW: 960,  FH: 540, WINDOW: 24 },
+    browser: { dir: 'media/packs-720/', FW: 1280, FH: 720, WINDOW: 36 },
+  };
+  let profile = suggested, dir, FW, FH, WINDOW;
+  const useProfile = name => { profile = name; ({ dir, FW, FH, WINDOW } = PROFILES[name]); };
+  useProfile(suggested);
 
   /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈70 notches / ≈63 swipes in total) */
   const distance = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;   // same speed per frame as the first film
 
   /* ---- download: frames come in a few bundle files (original WebP bytes, unchanged), progressive order ---- */
-  const blobs = new Array(COUNT); let got = 0;
+  let blobs = new Array(COUNT), got = 0, gen = 0, abort = null;
   const gotFrame = i => { got++; bar.style.width = (got / COUNT * 100) + '%'; if (got === COUNT) bar.classList.add('done'); if (Math.abs(i - pos) <= WINDOW) wake(); };
-  fetch(dir + 'index.json').then(r => r.json()).then(ix => {
-    const inBundle = ix.bundles.map(() => []);
-    ix.frames.forEach((f, i) => { if (f) inBundle[f[0]].push([i, f[1], f[2]]); });
-    let next = 0;
-    const fetchNext = () => {
-      if (next >= ix.bundles.length) return;
-      const b = next++;
-      fetch(dir + ix.bundles[b]).then(r => r.ok ? r.blob() : null).then(pack => {
-        if (pack) for (const [i, off, len] of inBundle[b]) { blobs[i] = pack.slice(off, off + len, 'image/webp'); gotFrame(i); }
-      }).catch(() => {}).finally(fetchNext);
-    };
-    for (let k = 0; k < 3; k++) fetchNext();
-  });
+  const load = () => {
+    const my = ++gen, base = dir;
+    if (abort) abort.abort();             // stop downloading the other version
+    abort = new AbortController(); const signal = abort.signal;
+    blobs = new Array(COUNT); got = 0; bar.classList.remove('done'); bar.style.width = '0';
+    fetch(base + 'index.json', { signal }).then(r => r.json()).then(ix => {
+      if (my !== gen) return;
+      const inBundle = ix.bundles.map(() => []);
+      ix.frames.forEach((f, i) => { if (f) inBundle[f[0]].push([i, f[1], f[2]]); });
+      let next = 0;
+      const fetchNext = () => {
+        if (my !== gen || next >= ix.bundles.length) return;
+        const b = next++;
+        fetch(base + ix.bundles[b], { signal }).then(r => r.ok ? r.blob() : null).then(pack => {
+          if (my !== gen || !pack) return;
+          for (const [i, off, len] of inBundle[b]) { blobs[i] = pack.slice(off, off + len, 'image/webp'); gotFrame(i); }
+        }).catch(() => {}).finally(fetchNext);
+      };
+      for (let k = 0; k < 3; k++) fetchNext();
+    }).catch(() => {});
+  };
+  load();   // the suggested version starts loading behind the opening page
 
   /* ---- decode off the main thread, only near the current position ---- */
   const bitmaps = new Map(), decoding = new Set(); let active = 0;
@@ -127,6 +197,27 @@
     requestAnimationFrame(tick);
   };
   const wake = () => { if (!running) { running = true; requestAnimationFrame(tick); } };
+
+  /* ---- opening page: pick a version, then the film unlocks ---- */
+  const intro = document.getElementById('intro'), buttons = [...intro.querySelectorAll('button')];
+  buttons.forEach(btn => btn.classList.toggle('primary', btn.dataset.profile === suggested));
+  (function drawBurst() {   // thin radiating lines like the reference, slightly irregular lengths
+    const svg = document.getElementById('burst'); let d = '';
+    for (let i = 0; i < 160; i++) {
+      const a = i / 160 * Math.PI * 2, r0 = 120 + (i * 37 % 23), r1 = 250 + (i * 53 % 97);
+      d += `M${(Math.cos(a) * r0).toFixed(1)} ${(Math.sin(a) * r0).toFixed(1)}L${(Math.cos(a) * r1).toFixed(1)} ${(Math.sin(a) * r1).toFixed(1)}`;
+    }
+    svg.innerHTML = `<path d="${d}" stroke="rgba(220,230,235,.42)" stroke-width="1" fill="none"/>`;
+  })();
+  const enter = name => {
+    if (name !== profile) { useProfile(name); for (const [, bm] of bitmaps) bm.close && bm.close(); bitmaps.clear(); load(); resize(); }
+    scrollTo(0, 0);
+    document.documentElement.classList.remove('locked');
+    intro.classList.add('leave');
+    setTimeout(() => intro.classList.add('gone'), 1100);
+    wake();
+  };
+  buttons.forEach(btn => btn.addEventListener('click', () => enter(btn.dataset.profile)));
 
   addEventListener('scroll', wake, { passive: true });
   addEventListener('resize', resize);
