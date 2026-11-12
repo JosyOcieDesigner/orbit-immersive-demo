@@ -7,6 +7,8 @@ Saat pertama dibuka tampil halaman pembuka rata tengah di atas adegan awan: kata
 - **Mobile Version** — frame 960×540 (`media/packs-540/`, ±33 MB), lebih ringan untuk HP / koneksi lambat.
 - **Browser Version** — frame HD 1280×720 (`media/packs-720/`, ±48 MB).
 
+Setelah **Mobile Version** diklik muncul petunjuk **"Rotate your smartphone"** (animasi HP berputar): hilang otomatis begitu HP dimiringkan (landscape), bisa di-tap untuk lanjut, dan kalau layar sudah landscape tampil ±2 detik lalu lanjut sendiri.
+
 Tombol yang cocok dengan perangkat tampil terisi (disarankan) dan versinya sudah mulai dimuat di belakang. Scroll terkunci sampai salah satu tombol diklik; kalau memilih versi lain, unduhan versi sebelumnya dibatalkan. Panjang scroll tetap mengikuti perangkat (mouse / sentuh). Font: Inter (Google Fonts).
 
 ## Film

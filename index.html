@@ -41,7 +41,7 @@
   .intro.gone{display:none}
   /* giant word behind the headline, bleeding off both edges */
   .intro .giant{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;white-space:nowrap;pointer-events:none;user-select:none;
-    font-weight:800;font-size:23vw;line-height:.8;letter-spacing:-.055em;
+    font-weight:800;font-size:clamp(90px,14.5vw,260px);line-height:.8;letter-spacing:-.055em;
     background:linear-gradient(180deg,rgba(var(--silver),.34),rgba(var(--silver),.10) 70%,rgba(var(--silver),.04));
     -webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.4s cubic-bezier(.2,.7,.2,1) both}
   /* thin radiating lines behind the centre, slowly turning */
@@ -63,8 +63,19 @@
   @keyframes rise{from{opacity:0;transform:translate(var(--tx,0),calc(var(--ty,0px) + 24px))}to{opacity:1;transform:translate(var(--tx,0),var(--ty,0))}}
   .intro .giant{--tx:-50%;--ty:-50%}
   @keyframes spin{to{transform:rotate(360deg)}}
-  @media(max-width:600px){.intro .giant{font-size:24vw}.intro .actions{flex-direction:column;width:min(320px,100%)}.intro button{justify-content:center}}
+  @media(max-width:600px){.intro .giant{font-size:17vw}.intro .actions{flex-direction:column;width:min(320px,100%)}.intro button{justify-content:center}}
   @media(prefers-reduced-motion:reduce){.intro *{animation:none!important}.intro{transition:opacity .3s}}
+  /* "Rotate your smartphone" hint after choosing Mobile Version */
+  .rotate{position:fixed;inset:0;z-index:6;display:none;place-items:center;text-align:center;cursor:pointer;
+    font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:#f4f7f8;background:rgba(8,9,11,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    opacity:0;transition:opacity .5s ease}
+  .rotate.show{display:grid}.rotate.in{opacity:1}
+  .rotate .box{display:flex;flex-direction:column;align-items:center;gap:22px;padding:24px}
+  .rotate svg{width:92px;height:92px;animation:turn 2.4s cubic-bezier(.6,0,.2,1) infinite}
+  .rotate strong{font-weight:800;font-size:clamp(26px,6.5vw,44px);line-height:1;letter-spacing:-.035em}
+  .rotate span{font-weight:500;font-size:14px;color:rgba(220,230,235,.7)}
+  @keyframes turn{0%,15%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+  @media(prefers-reduced-motion:reduce){.rotate svg{animation:none;transform:rotate(-90deg)}}
 </style>
 </head>
 <body>
@@ -95,6 +106,15 @@
     </div>
   </div>
 </section>
+<div class="rotate" id="rotate" role="dialog" aria-live="polite" aria-label="Rotate your smartphone">
+  <div class="box">
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="20" y="8" width="24" height="48" rx="5"/><path d="M29 50h6"/>
+    </svg>
+    <strong>Rotate your smartphone</strong>
+    <span>Tap to continue</span>
+  </div>
+</div>
 <script>
 (() => {
   const COUNT = 1914;                      // frames: concert dive (1–358) + bridge (359–362) + ending (363–610) + FOH trackback (611–944) + crew (945–1281) + crew FD to control desk (1282–1914)
@@ -217,7 +237,24 @@
     setTimeout(() => intro.classList.add('gone'), 1100);
     wake();
   };
-  buttons.forEach(btn => btn.addEventListener('click', () => enter(btn.dataset.profile)));
+  /* Mobile Version: ask to rotate first; continue on landscape, on tap, or after a moment if already landscape */
+  const rotate = document.getElementById('rotate'), landscape = matchMedia('(orientation: landscape)');
+  const askRotate = () => new Promise(done => {
+    let closed = false, timer;
+    const close = () => {
+      if (closed) return; closed = true; clearTimeout(timer);
+      landscape.removeEventListener('change', onTurn); rotate.removeEventListener('click', close);
+      rotate.classList.remove('in'); setTimeout(() => rotate.classList.remove('show'), 500); done();
+    };
+    const onTurn = () => { if (landscape.matches) setTimeout(close, 600); };
+    rotate.classList.add('show'); requestAnimationFrame(() => rotate.classList.add('in'));
+    landscape.addEventListener('change', onTurn); rotate.addEventListener('click', close);
+    if (landscape.matches) timer = setTimeout(close, 2200);
+  });
+  buttons.forEach(btn => btn.addEventListener('click', () => {
+    const name = btn.dataset.profile;
+    if (name === 'mobile') askRotate().then(() => enter(name)); else enter(name);
+  }));
 
   addEventListener('scroll', wake, { passive: true });
   addEventListener('resize', resize);
