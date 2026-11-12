@@ -13,12 +13,18 @@ Setelah memilih versi, halaman awal keluar bertahap (±2 detik): tombol turun & 
 
 Tombol yang cocok dengan perangkat tampil terisi (disarankan) dan versinya sudah mulai dimuat di belakang. Scroll terkunci sampai salah satu tombol diklik; kalau memilih versi lain, unduhan versi sebelumnya dibatalkan. Panjang scroll tetap mengikuti perangkat (mouse / sentuh). Font: Inter (Google Fonts).
 
+## WE CREATE. / WE CONNECT. / WE MAKE IT HAPPEN.
+
+Setelah masuk (versi apa pun), di bagian awan (frame 0–72) muncul tiga kalimat, Inter 800 kapital putih keperakan dengan glow lembut. Tiap kata keluar satu per satu dari balik awan (blur, kecil, keabu-abuan → tajam). "WE CREATE." muncul otomatis setelah halaman awal hilang; dua kalimat berikutnya muncul saat di-scroll. Saat scroll berlanjut kamera maju menembus kalimat (membesar ±8×, blur, memudar), lalu kalimat berikutnya muncul. "WE MAKE IT HAPPEN." ditembus tepat saat awan terbuka ke festival.
+
+Bagian awan diberi jarak scroll tambahan: ±4 scroll mouse (atau 1,4× tinggi layar di HP) per kalimat; sisa film tetap dengan kecepatan yang sama. Atur di `PHRASE()` / `CLOUD_END` di `index.html`.
+
 ## Film
 
 Setelah memilih versi, website berupa satu film penuh layar yang dijalankan dengan scroll: kamera menembus awan dan sorotan laser, turun ke area festival, menukik masuk lewat atap tenda kaca, masuk ke adegan konser, lalu (video ending) menyusuri penonton ke meja mixer di belakang tenda, lalu (video 3, FOH trackback) mundur dari meja FOH melewati penonton ke operator kamera, lalu (video 4, crew) pan ke crew lain di sebelahnya ke crew wanita yang memakai headset, lalu (video 5, crew FD) mundur dari crew wanita, berbelok ke sisi tenda dan berhenti di meja kontrol dengan dua operator.
 
 - Scroll menggerakkan film frame demi frame (1914 frame: concert dive 1–358, transisi 359–362, ending 363–610, FOH trackback 611–944, crew 945–1281, crew FD 1282–1914). Gerakannya dihaluskan sehingga di antara scroll terlihat seperti video berjalan.
-- Panjang scroll: kecepatan sama per frame, total sekitar 70 kali scroll mouse di desktop (~6950px), sekitar 63 kali swipe di HP. Ubah di fungsi `distance()` di `index.html`.
+- Panjang scroll: kecepatan sama per frame, total sekitar 80 kali scroll mouse di desktop (~7950px) termasuk bagian kalimat, sekitar 65 kali swipe di HP. Ubah di fungsi `distance()` di `index.html`.
 - Di akhir scroll film berhenti di adegan terakhir (`concert-last.jpg`, frame terakhir video ending).
 - Ikon mouse/swipe di bawah sebagai petunjuk scroll, hilang saat mulai scroll.
 - Frame dimuat bertahap (kerangka kasar dulu, lalu diisi) supaya scroll langsung bisa dipakai.

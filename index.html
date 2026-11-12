@@ -85,6 +85,14 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   @media(max-width:600px){.intro .giant{font-size:17vw}.intro .actions{flex-direction:column;width:min(320px,100%)}.intro button{justify-content:center}}
   @media(prefers-reduced-motion:reduce){.intro *{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}.intro.leave.fade{transition:opacity .3s}}
+  /* WE CREATE. / WE CONNECT. / WE MAKE IT HAPPEN. — appear word by word from the clouds, camera flies through */
+  .words{position:fixed;inset:0;z-index:1;pointer-events:none;display:grid;place-items:center;
+    font-family:Inter,"Helvetica Neue",Arial,sans-serif;text-align:center}
+  .words .phrase{grid-area:1/1;margin:0;max-width:92vw;padding:0 4vw;box-sizing:border-box;
+    font-weight:800;font-size:clamp(44px,9.2vw,168px);line-height:.94;letter-spacing:-.045em;text-transform:uppercase;
+    color:#eef2f4;text-shadow:0 0 30px rgba(210,225,235,.32),0 0 90px rgba(210,225,235,.16);
+    opacity:0;will-change:transform,opacity,filter;transform-origin:50% 50%}
+  .words .w{display:inline-block;margin:0 .02em;opacity:0;will-change:transform,opacity,filter}
   /* "Rotate your smartphone" hint after choosing Mobile Version */
   .rotate{position:fixed;inset:0;z-index:6;display:none;place-items:center;text-align:center;cursor:pointer;
     font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:#f4f7f8;background:rgba(8,9,11,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
@@ -108,6 +116,11 @@
 </main>
 <div class="bar" id="bar"></div>
 <div class="hint" id="hint" aria-hidden="true"><span class="icon"></span><span class="mouse">Scroll to explore</span><span class="touch">Swipe up to explore</span></div>
+<div class="words" id="words" aria-live="polite">
+  <p class="phrase">WE CREATE.</p>
+  <p class="phrase">WE CONNECT.</p>
+  <p class="phrase">WE MAKE IT HAPPEN.</p>
+</div>
 <div class="track" id="track"></div>
 <section class="intro" id="intro" aria-labelledby="intro-title">
   <div class="content">
@@ -155,7 +168,11 @@
   useProfile(suggested);
 
   /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈70 notches / ≈63 swipes in total) */
-  const distance = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;   // same speed per frame as the first film
+  const FILM = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;     // whole film at the usual speed per frame
+  const CLOUD_END = 72;                                                     // frames 0–72: camera still inside the clouds
+  const PHRASE = () => coarse ? innerHeight * 1.4 : 420;                    // scroll per phrase (~4 wheel notches)
+  const TEXT = () => PHRASE() * 3;                                          // three phrases ride the cloud section
+  const distance = () => TEXT() + FILM() * (COUNT - 1 - CLOUD_END) / (COUNT - 1);
 
   /* ---- download: frames come in a few bundle files (original WebP bytes, unchanged), progressive order ---- */
   let blobs = new Array(COUNT), got = 0, gen = 0, abort = null;
@@ -217,13 +234,63 @@
   setTimeout(() => { finalImg.src = 'media/concert-last.jpg'; }, 1200);
 
   /* ---- scroll → frame, eased so it plays like footage; loop runs only while moving ---- */
-  const target = () => { const max = Math.max(1, document.documentElement.scrollHeight - innerHeight); return Math.min(1, Math.max(0, scrollY / max)) * (COUNT - 1); };
-  let pos = target(), shown = -1, shownExact = false, running = false, prev = 0;
+  const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - innerHeight);
+  const sTarget = () => Math.min(maxScroll(), Math.max(0, scrollY));
+  const frameAt = sp => {                     // cloud section is stretched for the three phrases
+    const T = TEXT();
+    if (sp <= T) return sp / T * CLOUD_END;
+    return CLOUD_END + Math.min(1, (sp - T) / Math.max(1, maxScroll() - T)) * (COUNT - 1 - CLOUD_END);
+  };
+
+  /* ---- words: emerge from the clouds one by one, then the camera flies through them ---- */
+  const phrases = [...document.querySelectorAll('#words .phrase')].map(el => {
+    el.innerHTML = el.textContent.split(' ').map(w => `<span class="w">${w}</span>`).join(' ');
+    return { el, words: [...el.querySelectorAll('.w')] };
+  });
+  const clamp01 = v => Math.min(1, Math.max(0, v));
+  const smooth = v => { v = clamp01(v); return v * v * (3 - 2 * v); };
+  let entryAt = null;                         // first phrase rises on its own right after entering
+  const renderWords = (sp, now) => {
+    const D = PHRASE(); let busy = false;
+    phrases.forEach((ph, k) => {
+      const u = (sp - k * D) / D;
+      let pass, emerge;
+      if (k === 0) {
+        pass = clamp01((u - .3) / .7);
+        emerge = w => {
+          if (entryAt === null) return 0;
+          const e = clamp01((now - entryAt - w * 420) / 950); if (e < 1) busy = true; return e;
+        };
+      } else {
+        pass = clamp01((u - .58) / .42);
+        emerge = w => clamp01((u - w / ph.words.length * .26) / .2);
+      }
+      const visible = (k === 0 ? u < 1 : u > 0 && u < 1);
+      if (!visible) { ph.el.style.opacity = 0; return; }
+      // the camera pushes in slowly, then flies through the line
+      const push = 1 + .06 * clamp01(k === 0 ? u / .3 : (u - .2) / .38);
+      const fly = Math.pow(pass, 2.2) * 7;
+      ph.el.style.opacity = 1 - smooth((pass - .35) / .6);
+      ph.el.style.transform = `scale(${(push + fly).toFixed(4)})`;
+      ph.el.style.filter = reduce ? '' : `blur(${(pass * 9).toFixed(2)}px)`;
+      ph.words.forEach((w, i) => {
+        const e = smooth(emerge(i));
+        w.style.opacity = e;
+        w.style.transform = `translate3d(0,${((1 - e) * 34).toFixed(1)}px,0) scale(${(.8 + .2 * e).toFixed(4)})`;
+        w.style.filter = reduce ? '' : `blur(${((1 - e) * 16).toFixed(2)}px)`;
+        w.style.color = `rgb(${Math.round(150 + 88 * e)},${Math.round(160 + 82 * e)},${Math.round(166 + 78 * e)})`;   // greyer while still in the fog
+      });
+    });
+    return busy;
+  };
+
+  let sPos = sTarget(), pos = frameAt(sPos), shown = -1, shownExact = false, running = false, prev = 0;
   const tick = now => {
     const dt = prev ? Math.min(0.1, (now - prev) / 1000) : 0.016; prev = now;
-    const t = target();
-    pos = reduce ? t : pos + (t - pos) * (1 - Math.exp(-dt * 7));
-    if (Math.abs(t - pos) < 0.05) pos = t;
+    const st = sTarget();
+    sPos = reduce ? st : sPos + (st - sPos) * (1 - Math.exp(-dt * 7));
+    if (Math.abs(st - sPos) < .4) sPos = st;
+    pos = frameAt(sPos);
     const idx = Math.round(pos);
     decodeAround(idx);
     if (idx !== shown || !shownExact) {
@@ -232,7 +299,8 @@
     }
     finalImg.classList.toggle('show', finalReady && idx >= COUNT - 1);
     hint.classList.toggle('gone', scrollY > 20);
-    const settled = pos === t && shown === idx && shownExact;
+    const wordsBusy = renderWords(sPos, now);
+    const settled = sPos === st && shown === idx && shownExact && !wordsBusy;
     if (settled && decoding.size === 0) { running = false; prev = 0; return; }
     requestAnimationFrame(tick);
   };
@@ -260,6 +328,7 @@
     document.documentElement.classList.remove('locked');
     intro.classList.add('leave');                                   // buttons drop, headline slides up, letters scatter
     setTimeout(() => intro.classList.add('fade'), reduce ? 0 : 1350);  // then the veil lifts off the clouds
+    setTimeout(() => { entryAt = performance.now(); wake(); }, reduce ? 0 : 1250);   // WE CREATE. rises out of the clouds
     setTimeout(() => { intro.classList.add('gone'); hint.classList.add('ready'); }, reduce ? 300 : 2100);
     wake();
   };
