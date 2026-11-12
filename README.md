@@ -15,9 +15,15 @@ Tombol yang cocok dengan perangkat tampil terisi (disarankan) dan versinya sudah
 
 ## WE CREATE. / WE CONNECT. / WE MAKE IT HAPPEN.
 
-Setelah masuk (versi apa pun), di bagian awan (frame 0–72) muncul tiga kalimat, Inter 800 kapital putih keperakan dengan glow lembut. Tiap kata keluar satu per satu dari balik awan (blur, kecil, keabu-abuan → tajam). "WE CREATE." muncul otomatis setelah halaman awal hilang; dua kalimat berikutnya muncul saat di-scroll. Saat scroll berlanjut kamera maju menembus kalimat (membesar ±8×, blur, memudar), lalu kalimat berikutnya muncul. "WE MAKE IT HAPPEN." ditembus tepat saat awan terbuka ke festival.
+Setelah masuk (versi apa pun), tiga kalimat besar di tengah layar (Inter 800 kapital, putih keperakan dengan glow) muncul kata per kata dari kabut lalu ditembus kamera saat di-scroll (membesar, blur, memudar). Tiap kalimat punya momennya sendiri, dengan jeda tanpa teks di antaranya:
 
-Bagian awan diberi jarak scroll tambahan: ±4 scroll mouse (atau 1,4× tinggi layar di HP) per kalimat; sisa film tetap dengan kecepatan yang sama. Atur di `PHRASE()` / `CLOUD_END` di `index.html`.
+| Kalimat | Adegan | Frame |
+|---|---|---|
+| WE CREATE. | di dalam awan (muncul otomatis setelah halaman awal) | 0–55 |
+| WE CONNECT. | saat awan terbuka ke festival | 65–95 |
+| WE MAKE IT HAPPEN. | sebelum masuk atap tenda | 112–148 |
+
+Setelah kalimat ketiga, scroll langsung menukik menembus atap ke depan LED panggung (frame 148–270 dipadatkan ke ±3 scroll), lalu sisa film berjalan dengan kecepatan biasa. Peta scroll → frame ada di `knots()` di `index.html`; ±4 scroll per kalimat, jeda ±2 scroll.
 
 ## Film
 

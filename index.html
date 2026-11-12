@@ -88,9 +88,9 @@
   /* WE CREATE. / WE CONNECT. / WE MAKE IT HAPPEN. — appear word by word from the clouds, camera flies through */
   .words{position:fixed;inset:0;z-index:1;pointer-events:none;display:grid;place-items:center;
     font-family:Inter,"Helvetica Neue",Arial,sans-serif;text-align:center}
-  .words .phrase{grid-area:1/1;margin:0;max-width:92vw;padding:0 4vw;box-sizing:border-box;
-    font-weight:800;font-size:clamp(44px,9.2vw,168px);line-height:.94;letter-spacing:-.045em;text-transform:uppercase;
-    color:#eef2f4;text-shadow:0 0 30px rgba(210,225,235,.32),0 0 90px rgba(210,225,235,.16);
+  .words .phrase{grid-area:1/1;margin:0;max-width:96vw;padding:0 2vw;box-sizing:border-box;
+    font-weight:800;font-size:clamp(56px,12.5vw,232px);line-height:.92;letter-spacing:-.045em;text-transform:uppercase;
+    color:#eef2f4;text-shadow:0 2px 24px rgba(0,0,0,.38),0 0 30px rgba(210,225,235,.28),0 0 90px rgba(210,225,235,.14);
     opacity:0;will-change:transform,opacity,filter;transform-origin:50% 50%}
   .words .w{display:inline-block;margin:0 .02em;opacity:0;will-change:transform,opacity,filter}
   /* "Rotate your smartphone" hint after choosing Mobile Version */
@@ -169,10 +169,19 @@
 
   /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈70 notches / ≈63 swipes in total) */
   const FILM = () => (coarse ? innerHeight * 5.5 : 1300) * COUNT / 358;     // whole film at the usual speed per frame
-  const CLOUD_END = 72;                                                     // frames 0–72: camera still inside the clouds
   const PHRASE = () => coarse ? innerHeight * 1.4 : 420;                    // scroll per phrase (~4 wheel notches)
-  const TEXT = () => PHRASE() * 3;                                          // three phrases ride the cloud section
-  const distance = () => TEXT() + FILM() * (COUNT - 1 - CLOUD_END) / (COUNT - 1);
+  /* scroll px -> frame, piecewise:
+     WE CREATE. in the clouds (0–55) · pause · WE CONNECT. as the clouds open (65–95) · pause ·
+     WE MAKE IT HAPPEN. before the tent roof (112–148) · quick dive through the roof straight to the LED wall (148–270) ·
+     the rest of the film at its usual speed */
+  const knots = () => {
+    const D = PHRASE(), G = D * .45, pf = FILM() / (COUNT - 1);
+    const k = [[0, 0], [D, 55], [D + G, 65], [2 * D + G, 95], [2 * D + 2 * G, 112], [3 * D + 2 * G, 148], [3.8 * D + 2 * G, 270]];
+    k.push([k[k.length - 1][0] + (COUNT - 1 - 270) * pf, COUNT - 1]);
+    return k;
+  };
+  const phraseStart = k => { const D = PHRASE(), G = D * .45; return k * (D + G); };
+  const distance = () => { const k = knots(); return k[k.length - 1][0]; };
 
   /* ---- download: frames come in a few bundle files (original WebP bytes, unchanged), progressive order ---- */
   let blobs = new Array(COUNT), got = 0, gen = 0, abort = null;
@@ -236,10 +245,14 @@
   /* ---- scroll → frame, eased so it plays like footage; loop runs only while moving ---- */
   const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - innerHeight);
   const sTarget = () => Math.min(maxScroll(), Math.max(0, scrollY));
-  const frameAt = sp => {                     // cloud section is stretched for the three phrases
-    const T = TEXT();
-    if (sp <= T) return sp / T * CLOUD_END;
-    return CLOUD_END + Math.min(1, (sp - T) / Math.max(1, maxScroll() - T)) * (COUNT - 1 - CLOUD_END);
+  const frameAt = sp => {
+    const k = knots(), scale = distance() / maxScroll();      // track height may differ by a pixel or two
+    sp *= scale;
+    for (let i = 1; i < k.length; i++) if (sp <= k[i][0]) {
+      const [s0, f0] = k[i - 1], [s1, f1] = k[i];
+      return f0 + (sp - s0) / Math.max(1, s1 - s0) * (f1 - f0);
+    }
+    return COUNT - 1;
   };
 
   /* ---- words: emerge from the clouds one by one, then the camera flies through them ---- */
@@ -253,7 +266,7 @@
   const renderWords = (sp, now) => {
     const D = PHRASE(); let busy = false;
     phrases.forEach((ph, k) => {
-      const u = (sp - k * D) / D;
+      const u = (sp - phraseStart(k)) / D;
       let pass, emerge;
       if (k === 0) {
         pass = clamp01((u - .3) / .7);
