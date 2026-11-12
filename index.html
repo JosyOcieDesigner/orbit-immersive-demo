@@ -161,6 +161,8 @@
 </div>
 <script>
 (() => {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  scrollTo(0, 0);
   const COUNT = 358;                       // the site now ends on the last frame of video 1 (stage + LED wall); frames 359+ stay in media/frames-* unused
   const canvas = document.getElementById('film'), ctx = canvas.getContext('2d', { alpha: false });
   const layer = document.getElementById('layer'), finalImg = document.getElementById('final');
@@ -313,7 +315,9 @@
     const st = sTarget();
     sPos = reduce ? st : sPos + (st - sPos) * (1 - Math.exp(-dt * 7));
     if (Math.abs(st - sPos) < .4) sPos = st;
-    const atEnd = st >= maxScroll() - 2 && sPos >= maxScroll() - 2;
+    // only once the visitor has entered and really scrolled to the end (the opening page locks the height to one screen)
+    const entered = !document.documentElement.classList.contains('locked') && maxScroll() > 200;
+    const atEnd = entered && st >= maxScroll() - 2 && sPos >= maxScroll() - 2;
     let playing = false;
     if (atEnd) {
       // phrase three is gone: let the footage run on its own to the LED wall
@@ -334,7 +338,7 @@
       if (hit) { draw(hit[1]); shown = idx; shownExact = hit[0] === idx; }
     }
     finalImg.classList.toggle('show', finalReady && idx >= COUNT - 1);
-    info.classList.toggle('show', pos >= COUNT - 1.5);          // information band once we reach the LED wall
+    info.classList.toggle('show', entered && pos >= COUNT - 1.5);   // information band once we reach the LED wall
     hint.classList.toggle('gone', scrollY > 20);
     const wordsBusy = renderWords(sPos, now);
     const settled = sPos === st && shown === idx && shownExact && !wordsBusy && !playing;
