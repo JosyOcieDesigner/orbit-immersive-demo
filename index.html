@@ -186,11 +186,11 @@
   const PHRASE = () => coarse ? innerHeight * 1.4 : 420;                    // scroll per phrase (~4 wheel notches)
   /* scroll px -> frame, piecewise:
      WE CREATE. in the clouds (0–55) · pause · WE CONNECT. as the clouds open (65–95) · pause ·
-     WE MAKE IT HAPPEN. before the tent roof (112–148) · end of scroll; frames 148–357 then autoplay at 24 fps */
-  const AUTO_FROM = 148, AUTO_FPS = 24;   // after WE MAKE IT HAPPEN. the film plays by itself to the LED wall
+     WE MAKE IT HAPPEN. before the tent roof (112–148) · roof → LED wall (148–357), one snap */
+  const ROOF = 148;                        // WE MAKE IT HAPPEN. is passed here; one more scroll races to the LED wall
   const knots = () => {
     const D = PHRASE(), G = D * .45;
-    return [[0, 0], [D, 55], [D + G, 65], [2 * D + G, 95], [2 * D + 2 * G, 112], [3 * D + 2 * G, AUTO_FROM]];
+    return [[0, 0], [D, 55], [D + G, 65], [2 * D + G, 95], [2 * D + 2 * G, 112], [3 * D + 2 * G, ROOF], [3.9 * D + 2 * G, COUNT - 1]];
   };
   const phraseStart = k => { const D = PHRASE(), G = D * .45; return k * (D + G); };
   const distance = () => { const k = knots(); return k[k.length - 1][0]; };
@@ -235,8 +235,8 @@
 
   /* ---- sizing: canvas backing store never exceeds what the frames can show ---- */
   let cw = 0, ch = 0;
-  /* snap stops: WE CREATE. · WE CONNECT. (fully risen) · WE MAKE IT HAPPEN. (fully risen) · end (film autoplays to the LED wall) */
-  const snapStops = () => { const D = PHRASE(); return [0, phraseStart(1) + .45 * D, phraseStart(2) + .45 * D, distance()]; };
+  /* snap stops: WE CREATE. · WE CONNECT. (fully risen) · WE MAKE IT HAPPEN. (fully risen) · LED wall (end of video 1) */
+  const snapStops = () => { const D = PHRASE(); return [0, phraseStart(1) + .45 * D, phraseStart(2) + .45 * D, distance()]; };   // last stop = LED wall
   /* GSAP ScrollTrigger snap: a small scroll in either direction glides to the next stop,
      so the film races through the frames between two phrases and lands on the next one */
   let snapper = null;
@@ -282,7 +282,7 @@
       const [s0, f0] = k[i - 1], [s1, f1] = k[i];
       return f0 + (sp - s0) / Math.max(1, s1 - s0) * (f1 - f0);
     }
-    return AUTO_FROM;
+    return COUNT - 1;
   };
 
   /* ---- words: emerge from the clouds one by one, then the camera flies through them ---- */
@@ -308,7 +308,7 @@
         pass = clamp01((u - .58) / .42);
         emerge = w => clamp01((u - w / ph.words.length * .26) / .2);
       }
-      const visible = (k === 0 ? u < 1 : u > 0 && u < 1) && pos <= AUTO_FROM + .5;   // hidden while the film is past the roof / rewinding
+      const visible = (k === 0 ? u < 1 : u > 0 && u < 1) && pos <= ROOF + .5;   // hidden once the film is past the roof
       if (!visible) { ph.el.style.opacity = 0; return; }
       // the camera pushes in slowly, then flies through the line
       const push = 1 + .06 * clamp01(k === 0 ? u / .3 : (u - .2) / .38);
@@ -328,28 +328,14 @@
   };
 
   let sPos = sTarget(), pos = frameAt(sPos), shown = -1, shownExact = false, running = false, prev = 0;
-  let playStart = null;                           // autoplay clock (ms) once the scroll reaches its end
   const tick = now => {
     const dt = prev ? Math.min(0.1, (now - prev) / 1000) : 0.016; prev = now;
     const st = sTarget();
     sPos = reduce ? st : sPos + (st - sPos) * (1 - Math.exp(-dt * 7));
     if (Math.abs(st - sPos) < .4) sPos = st;
-    // only once the visitor has entered and really scrolled to the end (the opening page locks the height to one screen)
     const entered = !document.documentElement.classList.contains('locked') && maxScroll() > 200;
-    const atEnd = entered && st >= maxScroll() - 2 && sPos >= maxScroll() - 2;
-    let playing = false;
-    if (atEnd) {
-      // phrase three is gone: let the footage run on its own to the LED wall
-      if (playStart === null) playStart = now - Math.max(0, pos - AUTO_FROM) / AUTO_FPS * 1000;
-      pos = Math.min(COUNT - 1, AUTO_FROM + (now - playStart) / 1000 * AUTO_FPS);
-      playing = pos < COUNT - 1;
-    } else {
-      playStart = null;
-      const base = frameAt(sPos);
-      // scrolled back up after the autoplay: rewind quickly instead of jumping
-      pos = pos > base + .5 ? pos + (base - pos) * (1 - Math.exp(-dt * 4)) : base;
-      if (pos > base + .5) playing = true;
-    }
+    pos = frameAt(sPos);
+    const playing = false;
     const idx = Math.round(pos);
     decodeAround(Math.min(COUNT - 1, idx + (playing ? 12 : 0)));   // look ahead while the film runs
     if (idx !== shown || !shownExact) {
