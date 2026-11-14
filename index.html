@@ -159,6 +159,8 @@
     <span>Tap to continue</span>
   </div>
 </div>
+<script src="vendor/gsap/gsap.min.js"></script>
+<script src="vendor/gsap/ScrollTrigger.min.js"></script>
 <script>
 (() => {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -233,8 +235,25 @@
 
   /* ---- sizing: canvas backing store never exceeds what the frames can show ---- */
   let cw = 0, ch = 0;
+  /* snap stops: WE CREATE. · WE CONNECT. (fully risen) · WE MAKE IT HAPPEN. (fully risen) · end (film autoplays to the LED wall) */
+  const snapStops = () => { const D = PHRASE(); return [0, phraseStart(1) + .45 * D, phraseStart(2) + .45 * D, distance()]; };
+  /* GSAP ScrollTrigger snap: a small scroll in either direction glides to the next stop,
+     so the film races through the frames between two phrases and lands on the next one */
+  let snapper = null;
+  const placeSnaps = () => {
+    if (!window.gsap || !window.ScrollTrigger) return;   // without GSAP the page still scrolls freely
+    gsap.registerPlugin(ScrollTrigger);
+    if (snapper) snapper.kill();
+    const end = distance();
+    snapper = ScrollTrigger.create({
+      start: 0, end,
+      snap: { snapTo: snapStops().map(y => y / end), directional: true, inertia: false,
+              duration: { min: .9, max: 1.5 }, delay: .05, ease: 'power2.inOut' },
+    });
+  };
   const resize = () => {
     track.style.height = (innerHeight + distance()) + 'px';
+    placeSnaps();
     const r = layer.getBoundingClientRect(), dpr = devicePixelRatio || 1;
     const k = Math.min(1, FW / (r.width * dpr), FH / (r.height * dpr));   // cover-fit: frames are drawn 1:1, never upscaled in the canvas
     cw = canvas.width = Math.max(1, Math.round(r.width * dpr * k));

@@ -25,7 +25,9 @@ Setelah masuk (versi apa pun), tiga kalimat besar di tengah layar (Inter 800 kap
 
 Scroll **berakhir tepat setelah kalimat ketiga ditembus** (frame 148). Dari situ video **diputar otomatis** 24 fps (±9 detik) menembus atap ke panggung sampai ending video 1 di depan LED (frame 358), lalu muncul **pita informasi kosong** (`#info`) selebar layar di tengah (tinggi 50% layar, area atas & bawah kosong, blur ringan) untuk Browser maupun Mobile Version. Scroll ke atas memutar mundur film dan menyembunyikan panel.
 
-Karena website berakhir di video 1, paket `media/packs-*` sekarang hanya berisi frame 1–358 (desktop 12 MB, HP 7,7 MB). Frame video 2–5 (359–1914) tetap ada di `media/frames-*` dan bisa dipakai lagi dengan membuat ulang paket (`pack.py ... 1914 32`) dan mengubah `COUNT` serta `knots()`. Peta scroll → frame ada di `knots()` di `index.html`; ±4 scroll per kalimat, jeda ±2 scroll.
+Karena website berakhir di video 1, paket `media/packs-*` sekarang hanya berisi frame 1–358 (desktop 12 MB, HP 7,7 MB). Frame video 2–5 (359–1914) tetap ada di `media/frames-*` dan bisa dipakai lagi dengan membuat ulang paket (`pack.py ... 1914 32`) dan mengubah `COUNT` serta `knots()`. Peta scroll → frame ada di `knots()` di `index.html`.
+
+**Satu scroll = pindah kalimat.** Dengan GSAP ScrollTrigger `snap` (`vendor/gsap/`, GSAP 3.15.1), scroll/swipe kecil ke bawah membuat halaman meluncur sendiri (0,9–1,5 detik, power2.inOut) ke titik berikutnya, sehingga video melaju cepat di antara kalimat: WE CREATE. → WE CONNECT. → WE MAKE IT HAPPEN. → ujung (autoplay ke LED). Scroll ke atas kembali ke kalimat sebelumnya. Titik berhenti ada di `snapStops()`.
 
 ## Film
 
