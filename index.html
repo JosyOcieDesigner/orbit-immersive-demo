@@ -94,6 +94,35 @@
     opacity:0;will-change:transform,opacity,filter;transform-origin:50% 50%}
   .words .w{display:inline-block;margin:0 .02em;opacity:0;will-change:transform,opacity,filter}
   /* empty information panel that settles in once the film reaches the LED wall */
+  /* service scenes after the LED wall — reference: luxury scroll sites (brand word ghost, then one titled scene at a time, bottom-left) */
+  .brand{position:fixed;left:50%;top:50%;z-index:1;pointer-events:none;margin:0;white-space:nowrap;
+    font:800 clamp(64px,15vw,280px)/.8 Inter,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.05em;color:#fff;opacity:0;
+    transform:translate(-50%,-50%);mix-blend-mode:overlay;will-change:transform,opacity,filter}
+  .scenes{position:fixed;inset:0;z-index:2;pointer-events:none;font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:#f4f7f8}
+  .scene{position:absolute;left:clamp(22px,5.5vw,96px);bottom:clamp(64px,11vh,130px);max-width:min(640px,84vw);opacity:0;visibility:hidden}
+  @media(min-width:700px) and (min-aspect-ratio:1/1){.scene.right{left:auto;right:clamp(22px,5.5vw,96px);text-align:right}.scene.right .eyebrow{justify-content:flex-end}.scene.right .desc{margin-left:auto}}
+  .scene .eyebrow{margin:0 0 14px;font:600 11px/1 Inter,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(244,247,248,.75);display:flex;align-items:center;gap:12px}
+  .scene .eyebrow::before{content:"";width:28px;height:1px;background:rgba(244,247,248,.6)}
+  .scene h2{margin:0;font-weight:700;font-size:clamp(36px,5.2vw,92px);line-height:.98;letter-spacing:-.035em;text-shadow:0 2px 30px rgba(0,0,0,.35)}
+  .scene h2 .line{display:block;overflow:hidden;padding:.04em 0 .1em;margin:-.04em 0 -.1em}
+  .scene h2 .line>span{display:inline-block;will-change:transform}
+  .scene .desc{margin:16px 0 0;max-width:420px;font:400 clamp(14px,1.15vw,17px)/1.55 Inter,sans-serif;color:rgba(244,247,248,.82);text-shadow:0 1px 14px rgba(0,0,0,.45)}
+  .scene .stats{display:flex;gap:clamp(24px,4vw,64px);flex-wrap:wrap}
+  .scene .stat b{display:block;font-weight:700;font-size:clamp(40px,5.6vw,96px);line-height:1;letter-spacing:-.04em;text-shadow:0 2px 30px rgba(0,0,0,.35)}
+  .scene .stat span{display:block;margin-top:8px;font:600 11px/1.3 Inter,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,247,248,.78)}
+  /* final information band content */
+  .info .cta{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2.6vh,26px);padding:0 6vw;text-align:center;
+    font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:#f4f7f8}
+  .info .cta .eyebrow{margin:0;font:600 11px/1 Inter,sans-serif;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,247,248,.7)}
+  .info .cta h2{margin:0;font-weight:800;font-size:clamp(28px,4.4vw,72px);line-height:1;letter-spacing:-.035em;max-width:16ch}
+  .info .cta a.go{display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 26px;border-radius:999px;background:#e9eff1;color:#0c0e11;text-decoration:none;font:600 15px/1 Inter,sans-serif;transition:transform .25s,background .25s}
+  .info .cta a.go:hover{transform:translateY(-2px);background:#fff}
+  .info .cta .contact{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 22px;font:500 13px/1.4 Inter,sans-serif;color:rgba(244,247,248,.78)}
+  .info .cta .contact a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(244,247,248,.3)}
+  .info .cta>*{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+  .info.show .cta>*{opacity:1;transform:none}
+  .info.show .cta>*:nth-child(2){transition-delay:.12s}.info.show .cta>*:nth-child(3){transition-delay:.24s}.info.show .cta>*:nth-child(4){transition-delay:.36s}
+  @media(max-height:480px){.info .cta .contact{display:none}.info .cta{gap:10px}.info .cta a.go{height:40px}}
   .info{position:fixed;left:0;right:0;top:50%;z-index:3;height:50vh;min-height:220px;box-sizing:border-box;
     border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);
     background:linear-gradient(180deg,rgba(10,13,18,.46),rgba(10,13,18,.58));
@@ -132,7 +161,45 @@
   <p class="phrase">WE MAKE IT HAPPEN.</p>
 </div>
 <div class="track" id="track"></div>
-<section class="info" id="info" aria-label="Informasi"></section>
+<p class="brand" id="brand" aria-hidden="true">CEK ARTIS</p>
+<div class="scenes" id="scenes">
+  <article class="scene" data-from="395" data-to="505">
+    <p class="eyebrow">01 — What we do</p>
+    <h2>Event Experience</h2>
+    <p class="desc">Ideas into experiences people remember.</p>
+  </article>
+  <article class="scene" data-from="560" data-to="720">
+    <p class="eyebrow">02 — What we do</p>
+    <h2>Event &amp; Campaign Production</h2>
+    <p class="desc">Planning, creative direction, execution, and documentation.</p>
+  </article>
+  <article class="scene" data-from="830" data-to="1010">
+    <p class="eyebrow">03 — What we do</p>
+    <h2>Creative Digital Solution</h2>
+    <p class="desc">Content, visual communication, digital activation, and audience experience.</p>
+  </article>
+  <article class="scene right" data-from="1215" data-to="1460">
+    <p class="eyebrow">04 — What we do</p>
+    <h2>Brand Building &amp; Strategy</h2>
+    <p class="desc">Concept development, positioning, narrative, and campaign direction.</p>
+  </article>
+  <article class="scene" data-from="1520" data-to="1770">
+    <p class="eyebrow">Cek Artis in numbers</p>
+    <div class="stats">
+      <div class="stat"><b data-count="100">0+</b><span>Events produced</span></div>
+      <div class="stat"><b data-count="50">0+</b><span>Brands trusted</span></div>
+      <div class="stat"><b data-count="15">0+</b><span>Years of experience</span></div>
+    </div>
+  </article>
+</div>
+<section class="info" id="info" aria-label="Informasi">
+  <div class="cta">
+    <p class="eyebrow">Ready to start?</p>
+    <h2>Your next project starts with an idea.</h2>
+    <a class="go" href="mailto:cekartisindonesia@gmail.com">Let's work together →</a>
+    <p class="contact"><span>Josy Prasetaya</span><a href="https://wa.me/6285133997317">+62 851 3399 7317</a><a href="mailto:cekartisindonesia@gmail.com">cekartisindonesia@gmail.com</a><span>Jakarta, Indonesia</span></p>
+  </div>
+</section>
 <section class="intro" id="intro" aria-labelledby="intro-title">
   <div class="content">
     <div class="title">
@@ -331,6 +398,37 @@
     return busy;
   };
 
+  /* ---- after the LED wall: brand word ghost, then one service scene at a time (bottom-left), driven by the film position ---- */
+  const brand = document.getElementById('brand');
+  const scenes = [...document.querySelectorAll('#scenes .scene')].map(el => {
+    const h = el.querySelector('h2');
+    if (h) h.innerHTML = h.textContent.split(' ').map(w => `<span class="line" style="display:inline-block;margin-right:.24em"><span>${w}</span></span>`).join('');
+    return { el, from: +el.dataset.from, to: +el.dataset.to, words: [...el.querySelectorAll('h2 .line>span')],
+             eyebrow: el.querySelector('.eyebrow'), desc: el.querySelector('.desc'), counts: [...el.querySelectorAll('[data-count]')] };
+  });
+  const renderScenes = f => {
+    // CEK ARTIS ghost over the LED wall, pushed through as the camera moves on
+    const b = clamp01((f - LED) / 75);
+    brand.style.opacity = f < LED - 1 ? 0 : (.55 * (1 - smooth(b)));
+    brand.style.transform = `translate(-50%,-50%) scale(${(1 + b * 1.6).toFixed(3)})`;
+    brand.style.filter = reduce ? '' : `blur(${(b * 10).toFixed(1)}px)`;
+    scenes.forEach(sc => {
+      const IN = 28, OUT = 26;
+      const a = smooth((f - sc.from) / IN), d = smooth((f - (sc.to - OUT)) / OUT);
+      const on = f > sc.from && f < sc.to;
+      sc.el.style.visibility = on ? 'visible' : 'hidden';
+      if (!on) return;
+      sc.el.style.opacity = 1 - d;
+      sc.el.style.transform = `translate3d(0,${(-d * 26).toFixed(1)}px,0)`;
+      sc.el.style.filter = reduce || d === 0 ? '' : `blur(${(d * 8).toFixed(1)}px)`;
+      if (sc.eyebrow) { sc.eyebrow.style.opacity = a; sc.eyebrow.style.transform = `translateX(${((1 - a) * -24).toFixed(1)}px)`; }
+      sc.words.forEach((w, i) => { const e = smooth((f - sc.from - 4 - i * 3) / 18); w.style.transform = `translateY(${((1 - e) * 110).toFixed(1)}%)`; });
+      if (sc.desc) { const e = smooth((f - sc.from - 14) / 20); sc.desc.style.opacity = e; sc.desc.style.transform = `translateY(${((1 - e) * 14).toFixed(1)}px)`; }
+      sc.counts.forEach((c, i) => { const e = smooth((f - sc.from - i * 6) / 45); c.textContent = Math.round(+c.dataset.count * e) + '+';
+        c.parentElement.style.opacity = smooth((f - sc.from - i * 6) / 16); c.parentElement.style.transform = `translateY(${((1 - smooth((f - sc.from - i * 6) / 16)) * 30).toFixed(1)}px)`; });
+    });
+  };
+
   let sPos = sTarget(), pos = frameAt(sPos), shown = -1, shownExact = false, running = false, prev = 0;
   const tick = now => {
     const dt = prev ? Math.min(0.1, (now - prev) / 1000) : 0.016; prev = now;
@@ -350,6 +448,7 @@
     info.classList.toggle('show', entered && pos >= COUNT - 1.5);   // information band at the very end (crew at the control desk)
     hint.classList.toggle('gone', scrollY > 20);
     const wordsBusy = renderWords(sPos, now);
+    renderScenes(entered ? pos : 0);
     const settled = sPos === st && shown === idx && shownExact && !wordsBusy && !playing;
     if (settled && decoding.size === 0) { running = false; prev = 0; return; }
     requestAnimationFrame(tick);

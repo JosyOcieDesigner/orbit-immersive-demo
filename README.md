@@ -29,6 +29,22 @@ Paket `media/packs-*` berisi seluruh 1914 frame (desktop 48 MB, HP 33 MB). Peta 
 
 **Satu scroll = pindah kalimat.** Dengan GSAP ScrollTrigger `snap` (`vendor/gsap/`, GSAP 3.15.1), scroll/swipe kecil ke bawah membuat halaman meluncur sendiri (0,9–1,5 detik, power2.inOut) ke titik berikutnya, sehingga video melaju cepat di antara kalimat: WE CREATE. → WE CONNECT. → WE MAKE IT HAPPEN. → LED (akhir video 1). Scroll ke atas kembali ke kalimat sebelumnya. Titik berhenti ada di `snapStops()`.
 
+## Layanan CEKARTIS setelah LED
+
+Gaya motion text mengikuti referensi TikTok (website mewah bergaya Armani): nama brand besar transparan di tengah lalu ditembus kamera, kemudian satu adegan = satu judul di kiri bawah (label kecil + judul tebal yang meluncur naik dari balik garis + deskripsi 2 baris), keluar saat adegan berikutnya datang. Semua digerakkan scroll (mundur saat scroll ke atas). Isi diambil dari portofolio event (creative-event-portfolio):
+
+| Adegan (frame) | Teks |
+|---|---|
+| LED panggung (357–430) | **CEK ARTIS** besar transparan |
+| Penonton depan LED (395–505) | 01 — Event Experience · Ideas into experiences people remember. |
+| Meja FOH (560–720) | 02 — Event & Campaign Production · Planning, creative direction, execution, and documentation. |
+| Operator kamera (830–1010) | 03 — Creative Digital Solution · Content, visual communication, digital activation, and audience experience. |
+| Crew wanita (1215–1460, kanan bawah di layar lebar) | 04 — Brand Building & Strategy · Concept development, positioning, narrative, and campaign direction. |
+| Sisi tenda (1520–1770) | 100+ Events produced · 50+ Brands trusted · 15+ Years of experience (angka menghitung naik) |
+| Meja kontrol (akhir) | Pita: Ready to start? · Your next project starts with an idea. · Let's work together → (email) · kontak |
+
+Atur rentang frame lewat `data-from` / `data-to` di tiap `<article class="scene">`.
+
 ## Film
 
 Setelah memilih versi, website berupa satu film penuh layar yang dijalankan dengan scroll: kamera menembus awan dan sorotan laser, turun ke area festival, menukik masuk lewat atap tenda kaca, masuk ke adegan konser, lalu (video ending) menyusuri penonton ke meja mixer di belakang tenda, lalu (video 3, FOH trackback) mundur dari meja FOH melewati penonton ke operator kamera, lalu (video 4, crew) pan ke crew lain di sebelahnya ke crew wanita yang memakai headset, lalu (video 5, crew FD) mundur dari crew wanita, berbelok ke sisi tenda dan berhenti di meja kontrol dengan dua operator.
