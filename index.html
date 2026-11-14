@@ -402,7 +402,7 @@
   const brand = document.getElementById('brand');
   const scenes = [...document.querySelectorAll('#scenes .scene')].map(el => {
     const h = el.querySelector('h2');
-    if (h) h.innerHTML = h.textContent.split(' ').map(w => `<span class="line" style="display:inline-block;margin-right:.24em"><span>${w}</span></span>`).join('');
+    if (h) h.innerHTML = h.textContent.split(' ').map(w => `<span class="line" style="display:inline-block"><span>${w}</span></span>`).join(' ');
     return { el, from: +el.dataset.from, to: +el.dataset.to, words: [...el.querySelectorAll('h2 .line>span')],
              eyebrow: el.querySelector('.eyebrow'), desc: el.querySelector('.desc'), counts: [...el.querySelectorAll('[data-count]')] };
   });
