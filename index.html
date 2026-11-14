@@ -165,7 +165,8 @@
 (() => {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   scrollTo(0, 0);
-  const COUNT = 358;                       // the site now ends on the last frame of video 1 (stage + LED wall); frames 359+ stay in media/frames-* unused
+  const COUNT = 1914;                      // full film: concert dive (1–358, LED wall) + ending/FOH + FOH trackback + crew + crew FD to the control desk (…–1914)
+  const LED = 357;                         // index of the LED-wall frame (end of video 1): last snap stop
   const canvas = document.getElementById('film'), ctx = canvas.getContext('2d', { alpha: false });
   const layer = document.getElementById('layer'), finalImg = document.getElementById('final');
   const track = document.getElementById('track'), bar = document.getElementById('bar'), hint = document.getElementById('hint');
@@ -183,14 +184,16 @@
   useProfile(suggested);
 
   /* scroll length: ~13 wheel notches / ~12 swipes per 358 frames (≈70 notches / ≈63 swipes in total) */
+  const FRAME_PX = () => coarse ? innerHeight * 5.5 / 358 : 1300 / 358;   // usual scroll per frame (~13 notches / 12 swipes per 358 frames)
   const PHRASE = () => coarse ? innerHeight * 1.4 : 420;                    // scroll per phrase (~4 wheel notches)
   /* scroll px -> frame, piecewise:
      WE CREATE. in the clouds (0–55) · pause · WE CONNECT. as the clouds open (65–95) · pause ·
-     WE MAKE IT HAPPEN. before the tent roof (112–148) · roof → LED wall (148–357), one snap */
+     WE MAKE IT HAPPEN. before the tent roof (112–148) · roof → LED wall (148–357), one snap · then free scroll through FOH, camera operator, crew to the control desk */
   const ROOF = 148;                        // WE MAKE IT HAPPEN. is passed here; one more scroll races to the LED wall
   const knots = () => {
     const D = PHRASE(), G = D * .45;
-    return [[0, 0], [D, 55], [D + G, 65], [2 * D + G, 95], [2 * D + 2 * G, 112], [3 * D + 2 * G, ROOF], [3.9 * D + 2 * G, COUNT - 1]];
+    return [[0, 0], [D, 55], [D + G, 65], [2 * D + G, 95], [2 * D + 2 * G, 112], [3 * D + 2 * G, ROOF], [3.9 * D + 2 * G, LED],
+            [3.9 * D + 2 * G + (COUNT - 1 - LED) * FRAME_PX(), COUNT - 1]];   // after the LED wall: free scroll at the usual speed to the crew
   };
   const phraseStart = k => { const D = PHRASE(), G = D * .45; return k * (D + G); };
   const distance = () => { const k = knots(); return k[k.length - 1][0]; };
@@ -236,7 +239,8 @@
   /* ---- sizing: canvas backing store never exceeds what the frames can show ---- */
   let cw = 0, ch = 0;
   /* snap stops: WE CREATE. · WE CONNECT. (fully risen) · WE MAKE IT HAPPEN. (fully risen) · LED wall (end of video 1) */
-  const snapStops = () => { const D = PHRASE(); return [0, phraseStart(1) + .45 * D, phraseStart(2) + .45 * D, distance()]; };   // last stop = LED wall
+  const ledStop = () => { const D = PHRASE(), G = D * .45; return 3.9 * D + 2 * G; };
+  const snapStops = () => { const D = PHRASE(); return [0, phraseStart(1) + .45 * D, phraseStart(2) + .45 * D, ledStop()]; };   // last stop = LED wall
   /* GSAP ScrollTrigger snap: a small scroll in either direction glides to the next stop,
      so the film races through the frames between two phrases and lands on the next one */
   let snapper = null;
@@ -244,7 +248,7 @@
     if (!window.gsap || !window.ScrollTrigger) return;   // without GSAP the page still scrolls freely
     gsap.registerPlugin(ScrollTrigger);
     if (snapper) snapper.kill();
-    const end = distance();
+    const end = ledStop();                         // snapping only for the phrases + LED; after that scroll is free
     snapper = ScrollTrigger.create({
       start: 0, end,
       snap: { snapTo: snapStops().map(y => y / end), directional: true, inertia: false,
@@ -343,7 +347,7 @@
       if (hit) { draw(hit[1]); shown = idx; shownExact = hit[0] === idx; }
     }
     finalImg.classList.toggle('show', finalReady && idx >= COUNT - 1);
-    info.classList.toggle('show', entered && pos >= COUNT - 1.5);   // information band once we reach the LED wall
+    info.classList.toggle('show', entered && pos >= COUNT - 1.5);   // information band at the very end (crew at the control desk)
     hint.classList.toggle('gone', scrollY > 20);
     const wordsBusy = renderWords(sPos, now);
     const settled = sPos === st && shown === idx && shownExact && !wordsBusy && !playing;

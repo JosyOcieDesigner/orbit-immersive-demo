@@ -23,9 +23,9 @@ Setelah masuk (versi apa pun), tiga kalimat besar di tengah layar (Inter 800 kap
 | WE CONNECT. | saat awan terbuka ke festival | 65–95 |
 | WE MAKE IT HAPPEN. | sebelum masuk atap tenda | 112–148 |
 
-Dari WE MAKE IT HAPPEN., **satu scroll** langsung melaju cepat (snap ±1–1,5 detik) menembus atap ke panggung sampai ending video 1 di depan LED (frame 358) — tidak ada lagi autoplay lambat. Di akhir muncul **pita informasi kosong** (`#info`) selebar layar di tengah (tinggi 50% layar, area atas & bawah kosong, blur ringan) untuk Browser maupun Mobile Version. Scroll ke atas kembali ke WE MAKE IT HAPPEN. dan menyembunyikan panel.
+Dari WE MAKE IT HAPPEN., **satu scroll** langsung melaju cepat (snap ±1–1,5 detik) menembus atap ke depan LED (frame 357, akhir video 1). **Setelah LED scroll bebas** (tanpa snap) dengan kecepatan biasa melanjutkan film: meja FOH, operator kamera, crew wanita dengan headset, sampai meja kontrol crew di belakang penonton (frame 1914). Di ujung film muncul **pita informasi kosong** (`#info`) selebar layar di tengah (tinggi 50%, area atas & bawah kosong, blur ringan) untuk Browser maupun Mobile Version.
 
-Karena website berakhir di video 1, paket `media/packs-*` sekarang hanya berisi frame 1–358 (desktop 12 MB, HP 7,7 MB). Frame video 2–5 (359–1914) tetap ada di `media/frames-*` dan bisa dipakai lagi dengan membuat ulang paket (`pack.py ... 1914 32`) dan mengubah `COUNT` serta `knots()`. Peta scroll → frame ada di `knots()` di `index.html`.
+Paket `media/packs-*` berisi seluruh 1914 frame (desktop 48 MB, HP 33 MB). Peta scroll → frame ada di `knots()` di `index.html`.
 
 **Satu scroll = pindah kalimat.** Dengan GSAP ScrollTrigger `snap` (`vendor/gsap/`, GSAP 3.15.1), scroll/swipe kecil ke bawah membuat halaman meluncur sendiri (0,9–1,5 detik, power2.inOut) ke titik berikutnya, sehingga video melaju cepat di antara kalimat: WE CREATE. → WE CONNECT. → WE MAKE IT HAPPEN. → LED (akhir video 1). Scroll ke atas kembali ke kalimat sebelumnya. Titik berhenti ada di `snapStops()`.
 
